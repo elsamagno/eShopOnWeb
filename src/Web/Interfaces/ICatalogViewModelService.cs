@@ -12,5 +12,8 @@ namespace Microsoft.eShopWeb.Web.Services
         CancellationToken cancellationToken = default(CancellationToken));
         Task<IEnumerable<SelectListItem>> GetBrands(CancellationToken cancellationToken = default(CancellationToken));
         Task<IEnumerable<SelectListItem>> GetTypes(CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<
+        
     }
 }

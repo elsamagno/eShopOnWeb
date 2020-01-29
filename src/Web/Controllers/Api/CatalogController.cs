@@ -20,6 +20,15 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
         }
           [HttpGet("{id}")]
          public async Task<IActionResult> GetById(int itemId){
+             return Ok();
+         }
            
     }
+     [HttpGet("{id}")]
+        public async Task<ActionResult<CatalogIndexViewModel>> GetById(int id){
+           var catalogItem = await _catalogViewModelService.GetItemById(id);
+           return Ok(catalogItem);
+
+        }
+}
 }

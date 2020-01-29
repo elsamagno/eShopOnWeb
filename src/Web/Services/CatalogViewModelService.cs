@@ -136,5 +136,14 @@ namespace Microsoft.eShopWeb.Web.Services
 
             return items;
         }
+        public Task<CatalogItemViewModel>GetItemById(int id, CancellationToken cancellationToken{
+            try{
+                var item = await _itemRepository.GetByIdAsync(id); 
+                if (item == null)   {
+                    throw new ModelNotFoundException
+                }        
+        }catch (Exception ex){
+            throw new Model
+        }
     }
 }
