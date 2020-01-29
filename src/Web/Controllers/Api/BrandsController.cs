@@ -17,5 +17,9 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
             var catalogModel = await _brandViewModelService.GetCatalogItems(page ?? 0, itemsPage, brandFilterApplied, typesFilterApplied, HttpContext.RequestAborted);
             return Ok(catalogModel);
         }
+        [HttpGet("{id}")]
+         public async Task<IActionResult> GetById(int itemId){
+             return Ok(897987);
+         }
     }
 }
