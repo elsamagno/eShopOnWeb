@@ -6,6 +6,8 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
 {
     public class GenerateCatalogItemCacheKey_Should
     {
+        private string searchText;
+
         [Fact]
         public void ReturnCatalogItemCacheKey()
         {

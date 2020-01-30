@@ -12,6 +12,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
     [Authorize(Roles = AuthorizationConstants.Roles.ADMINISTRATORS)]
     public class IndexModel : PageModel
     {
+        private const string SearchText = "TODO";
         private readonly ICatalogViewModelService _catalogViewModelService;
         private readonly IMemoryCache _cache;
 
@@ -27,8 +28,8 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
         {
             var cacheKey = CacheHelpers.GenerateCatalogItemCacheKey(
                 pageId.GetValueOrDefault(),
-                Constants.ITEMS_PER_PAGE, 
-                "TODO",
+                Constants.ITEMS_PER_PAGE,
+                SearchText,
                 catalogModel.BrandFilterApplied,
                 catalogModel.TypesFilterApplied);
 

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.eShopWeb.Web.ViewModels;
-using Microsoft.eShopWeb.Web.ViewModels;
 using System;
 
 namespace Microsoft.eShopWeb.Web.Controllers.Api

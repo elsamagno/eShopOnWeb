@@ -14,6 +14,11 @@ namespace Microsoft.eShopWeb.Web.Extensions
             );
         }
 
+        public static object GenerateCatalogItemCacheKey(int pageIndex, int iTEMS_PER_PAGE, object searchText, int? brandId, int? typeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public static string GenerateBrandsCacheKey()
         {
             return "brands";

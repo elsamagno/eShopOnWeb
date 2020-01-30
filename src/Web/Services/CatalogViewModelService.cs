@@ -31,7 +31,7 @@ namespace Microsoft.eShopWeb.Web.Services
         private readonly ICurrencyService _currencyService;
 
         private readonly CatalogContext _catalogContext;
-
+        private int pageItemsOffset;
         private const Currency DEFAULT_PRICE_UNIT = Currency.USD; // TODO: Get from Configuration
         private const Currency USER_PRICE_UNIT = Currency.EUR; // TODO: Get from IUserCurrencyService    
         public CatalogViewModelService(
@@ -86,7 +86,8 @@ namespace Microsoft.eShopWeb.Web.Services
             }
             if(typeId.HasValue){
                 // query = query.Where(x=> x.CatalogTypeId == typeId.Value);
-                whereExpr.Add(x => x.CatalogTypeId == typeId.Value);
+                whereExpr.Add(x => x.CatalogTypeId
+                == typeId.Value);
             }
             whereExpr.ForEach(expr => query.Where(expr));
             query = query.Skip(pageItemsOffset).Take(itemsPage);
@@ -195,15 +196,22 @@ namespace Microsoft.eShopWeb.Web.Services
                 if (item == null) {
                     throw new ModelNotFoundException($"Catalog item not found. id={id}");
                 }
-                var catalogItemViewModel = await CreateCatalogItemViewModelAsync(
-                    item, convertPrice, cancellationToken)
+                CatalogItemViewModel catalogItemViewModel1 = await CreateCatalogItemViewModelAsync(
+                    item, convertPrice, cancellationToken);
+                var catalogItemViewModel = catalogItemViewModel1;
                 return catalogItemViewModel;
             } catch (Exception ex) {
-                throw new ModelNotFoundException($"Catalog item not found. id={id}", ex);
+                string message = $"Catalog item not found.id={id}";
+                throw new ModelNotFoundException(message,ex);
             }
         }
-    }
 
+        public Task<CatalogIndexViewModel> GetCatalogItems(int v1, int iTEMS_PER_PAGE, string v2, int? brandFilterApplied, int? typesFilterApplied, CancellationToken requestAborted)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
     public class ModelNotFoundException: Exception {
 
         public ModelNotFoundException(string message, Exception innerException = null)
@@ -211,4 +219,4 @@ namespace Microsoft.eShopWeb.Web.Services
 
             }
     }
-}
+

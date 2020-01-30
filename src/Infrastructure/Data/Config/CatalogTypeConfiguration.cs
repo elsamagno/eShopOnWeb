@@ -6,6 +6,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Config
 {
     public class CatalogTypeConfiguration : IEntityTypeConfiguration<CatalogType>
     {
+        [System.Obsolete]
         public void Configure(EntityTypeBuilder<CatalogType> builder)
         {
             builder.HasKey(ci => ci.Id);
