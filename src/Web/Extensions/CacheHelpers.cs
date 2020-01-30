@@ -9,7 +9,9 @@ namespace Microsoft.eShopWeb.Web.Extensions
 
         public static string GenerateCatalogItemCacheKey(int pageIndex, int itemsPage, string searchText, int? brandId, int? typeId)
         {
-            return string.Format(_itemsKeyTemplate, pageIndex, itemsPage,searchText, brandId, typeId);
+            return string.Format(
+                _itemsKeyTemplate, pageIndex, itemsPage, brandId, typeId, searchText ?? string.Empty // TODO: Handle invalid special chars in cache keys?
+            );
         }
 
         public static string GenerateBrandsCacheKey()

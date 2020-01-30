@@ -8,7 +8,13 @@ namespace Microsoft.eShopWeb.Web.Services
 {
     public interface ICatalogViewModelService
     {
-        Task<CatalogIndexViewModel> GetCatalogItems(int pageIndex, int itemsPage, string searchText, int? brandId, int? typeId,
+        Task<CatalogIndexViewModel> GetCatalogItems(
+            int pageIndex, 
+            int itemsPage, 
+            string searchText, 
+            int? brandId, 
+            int? typeId,
+            bool convertPrice = true,
         CancellationToken cancellationToken = default(CancellationToken));
         Task<IEnumerable<SelectListItem>> GetBrands(CancellationToken cancellationToken = default(CancellationToken));
         Task<IEnumerable<SelectListItem>> GetTypes(CancellationToken cancellationToken = default(CancellationToken));
@@ -18,8 +24,11 @@ namespace Microsoft.eShopWeb.Web.Services
         /// </summary>
         /// <param name="id"></param>
         /// <param name="cancellationToken"></param>
+         /// <param name="id">Item identifier</param>
+        /// <param name="convertPrice">Convert price?</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
-        Task<CatalogItemViewModel> GetItemById(int id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<CatalogItemViewModel> GetItemById(int id, bool convertPrice = true, CancellationToken cancellationToken = default(CancellationToken));
         
     }
 }

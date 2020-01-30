@@ -18,7 +18,9 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
             int? brandFilterApplied, int? typesFilterApplied, int? page, string searchText= null)
         {
             var itemsPage = 10;           
-            var catalogModel = await _catalogViewModelService.GetCatalogItems( page ?? 0, itemsPage, searchText, brandFilterApplied, typesFilterApplied, HttpContext.RequestAborted);
+            var catalogModel = await _catalogViewModelService.GetCatalogItems( 
+                page ?? 0, itemsPage, searchText, 
+                brandFilterApplied, typesFilterApplied, true, HttpContext.RequestAborted);
             return Ok(catalogModel);
         }
           [HttpGet("{id}")]
