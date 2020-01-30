@@ -4,7 +4,8 @@ using System.Linq;
 using System.Net.Mime;
 
 using Ardalis.ListStartupServices;
-
+using Infrastructure.Services;
+using Infrastructure.Services.CurrencyService;
 using MediatR;
 
 using Microsoft.AspNetCore.Builder;
@@ -29,10 +30,9 @@ using Microsoft.Extensions.Hosting;
 
 using Newtonsoft.Json;
 using Web.Extensions;
-using Infrastructure.Services;
-using Infrastructure.Services.CurrencyService;
-using Web.Extensions.Middleware;
 
+using Web.Extensions.Middleware;
+[assembly : ApiConventionType(typeof(DefaultApiConventions))]
 namespace Microsoft.eShopWeb.Web {
     public class Startup {
         private IServiceCollection _services;
@@ -122,7 +122,7 @@ namespace Microsoft.eShopWeb.Web {
 
     // This method gets called by the runtime. Use this method to add services to the container.
       
-    public void ConfigureServices(IServiceCollection services) {
+       public void ConfigureServices(IServiceCollection services) {
             ConfigureCookieSettings(services);
 
             CreateIdentityIfNotCreated(services);
