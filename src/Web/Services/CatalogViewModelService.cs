@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +29,9 @@ namespace Microsoft.eShopWeb.Web.Services
         private readonly IAsyncRepository<CatalogType> _typeRepository;
         private readonly IUriComposer _uriComposer;
         private readonly ICurrencyService _currencyService;
+
         private readonly CatalogContext _catalogContext;
+
         private const Currency DEFAULT_PRICE_UNIT = Currency.USD; // TODO: Get from Configuration
         private const Currency USER_PRICE_UNIT = Currency.EUR; // TODO: Get from IUserCurrencyService    
         public CatalogViewModelService(
@@ -55,8 +57,9 @@ namespace Microsoft.eShopWeb.Web.Services
         /// </summary>
         /// <param name="catalogItem">Catalog item</param>
         /// <returns>CatalogItemViewModel</returns>
+
         private async Task<CatalogItemViewModel> CreateCatalogItemViewModelAsync(
-            CatalogItem catalogItem, CancellationToken cancellationToken = default(CancellationToken)) {
+           
                   CatalogItem catalogItem,
                   bool convertPrice = true,
                   CancellationToken cancellationToken = default(CancellationToken)) {
@@ -75,8 +78,8 @@ namespace Microsoft.eShopWeb.Web.Services
 
         private async Task<IReadOnlyList<CatalogItem>> ListCatalogItems(
             int pageItemOffset, int itemsPage, int? brandId, int? typeId){
-         var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
-         var whereExpr = new List<Expression<Func<CatalogItem, bool>>>();
+            var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
+            var whereExpr = new List<Expression<Func<CatalogItem, bool>>>();
             if(brandId.HasValue){
                 query = query.Where(x=> x.CatalogBrandId == brandId.Value);
                 whereExpr.Add(x => x.CatalogBrandId == brandId.Value);
@@ -86,19 +89,19 @@ namespace Microsoft.eShopWeb.Web.Services
                 whereExpr.Add(x => x.CatalogTypeId == typeId.Value);
             }
             whereExpr.ForEach(expr => query.Where(expr));
-           query = query.Skip(pageItemOffset).Take(itemsPage);
+            query = query.Skip(pageItemsOffset).Take(itemsPage);
             return await query.ToListAsync();
         }
 
-        private Task<int> CountCatalogItems(
+        private Task <int> CountCatalogItems(
              int? brandId, int? typeId
-             ){
-            var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
-            query.Where(catalogItem => (!brandId.HasValue || catalogItem.CatalogBrandId == brandId) &&
+             ) {
+                 var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
+                 query.Where(catalogItem => (!brandId.HasValue || catalogItem.CatalogBrandId == brandId) &&
                 (!typeId.HasValue || catalogItem.CatalogTypeId == typeId));
             return query.CountAsync();
-        
         }
+        
 
 
         public async Task<CatalogIndexViewModel> GetCatalogItems(
