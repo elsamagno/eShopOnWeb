@@ -31,7 +31,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
             _cache.Remove(cacheKey);
 
             CatalogModel = await _catalogViewModelService.GetCatalogItems(
-                pageId.GetValueOrDefault(), Constants.ITEMS_PER_PAGE, catalogModel.BrandFilterApplied, catalogModel.TypesFilterApplied, HttpContext.RequestAborted);
+                pageId.GetValueOrDefault(), Constants.ITEMS_PER_PAGE, "", catalogModel.BrandFilterApplied, catalogModel.TypesFilterApplied, HttpContext.RequestAborted);
         }
     }
 }

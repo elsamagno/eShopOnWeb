@@ -15,10 +15,10 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
 
         [HttpGet]
          public async Task<ActionResult<CatalogIndexViewModel>> List(
-            int? brandFilterApplied, int? typesFilterApplied, int? page)
+            int? brandFilterApplied, int? typesFilterApplied, int? page, string searchText= null)
         {
             var itemsPage = 10;           
-            var catalogModel = await _catalogViewModelService.GetCatalogItems(page ?? 0, itemsPage, brandFilterApplied, typesFilterApplied, HttpContext.RequestAborted);
+            var catalogModel = await _catalogViewModelService.GetCatalogItems( page ?? 0, itemsPage, searchText, brandFilterApplied, typesFilterApplied, HttpContext.RequestAborted);
             return Ok(catalogModel);
         }
           [HttpGet("{id}")]
@@ -30,13 +30,7 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
             } catch (ModelNotFoundException) {
                 return NotFound();
             }
+        }
         
     }
-     [HttpGet("{id}")]
-        public async Task<ActionResult<CatalogIndexViewModel>> GetById(int id){
-           var catalogItem = await _catalogViewModelService.GetItemById(id);
-           return Ok(catalogItem);
-
-        }
-}
 }

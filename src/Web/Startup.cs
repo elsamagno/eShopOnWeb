@@ -32,6 +32,8 @@ using Newtonsoft.Json;
 using Web.Extensions;
 
 using Web.Extensions.Middleware;
+using Microsoft.AspNetCore.Mvc;
+
 [assembly : ApiConventionType(typeof(DefaultApiConventions))]
 namespace Microsoft.eShopWeb.Web {
     public class Startup {

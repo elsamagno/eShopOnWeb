@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
+using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Web.ViewModels;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,6 +27,7 @@ namespace Microsoft.eShopWeb.Web.Services
         private readonly IAsyncRepository<CatalogType> _typeRepository;
         private readonly IUriComposer _uriComposer;
         private readonly ICurrencyService _currencyService;
+        private readonly CatalogContext _catalogContext;
         private const Currency DEFAULT_PRICE_UNIT = Currency.USD; // TODO: Get from Configuration
         private const Currency USER_PRICE_UNIT = Currency.EUR; // TODO: Get from IUserCurrencyService    
         public CatalogViewModelService(
@@ -32,8 +36,8 @@ namespace Microsoft.eShopWeb.Web.Services
             IAsyncRepository<CatalogBrand> brandRepository,
             IAsyncRepository<CatalogType> typeRepository,
             IUriComposer uriComposer,
-            ICurrencyService currencyService
-        )
+            ICurrencyService currencyService,
+            CatalogContext catalogContext)
         {
             _logger = loggerFactory.CreateLogger<CatalogViewModelService>();
             _itemRepository = itemRepository;
@@ -41,6 +45,7 @@ namespace Microsoft.eShopWeb.Web.Services
             _typeRepository = typeRepository;
             _uriComposer = uriComposer;
             _currencyService = currencyService;
+            _catalogContext = catalogContext;
         }
 
         /// <summary>
@@ -62,18 +67,50 @@ namespace Microsoft.eShopWeb.Web.Services
                 };
         }
 
-        public async Task<CatalogIndexViewModel> GetCatalogItems(int pageIndex, int itemsPage, int? brandId, int? typeId,
+        private async Task<IReadOnlyList<CatalogItem>> ListCatalogItems(int pageItemOffset, int itemsPage, int? brandId, int? typeId){
+         var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
+         var whereExpr = new List<Expression<Func<CatalogItem, bool>>>();
+            if(brandId.HasValue){
+                query = query.Where(x=> x.CatalogBrandId == brandId.Value);
+                whereExpr.Add(x => x.CatalogBrandId == brandId.Value);
+            }
+            if(typeId.HasValue){
+                // query = query.Where(x=> x.CatalogTypeId == typeId.Value);
+                whereExpr.Add(x => x.CatalogTypeId == typeId.Value);
+            }
+            whereExpr.ForEach(expr => query.Where(expr));
+            query.Skip(pageItemOffset).Take(itemsPage);
+            return await query.ToListAsync();
+        }
+
+        private Task<int> CountCatalogItems( int? brandId, int? typeId){
+            var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
+            if(brandId.HasValue){
+                query = query.Where(x=> x.CatalogBrandId == brandId.Value);
+            }
+            if(typeId.HasValue){
+                 query = query.Where(x=> x.CatalogTypeId == typeId.Value);
+            }
+            return query.CountAsync();
+        
+        }
+
+
+        public async Task<CatalogIndexViewModel> GetCatalogItems(int pageIndex, int itemsPage, string searchText, int? brandId, int? typeId,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             _logger.LogInformation("GetCatalogItems called.");
 
-            var filterSpecification = new CatalogFilterSpecification(brandId, typeId);
-            var filterPaginatedSpecification =
-                new CatalogFilterPaginatedSpecification(itemsPage * pageIndex, itemsPage, brandId, typeId);
+            var filterSpecification = new CatalogFilterSpecification(searchText, brandId, typeId);
+             var filterPaginatedSpecification =
+             new CatalogFilterPaginatedSpecification(itemsPage * pageIndex, itemsPage, searchText, brandId, typeId);
 
             // the implementation below using ForEach and Count. We need a List.
-            var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
-            var totalItems = await _itemRepository.CountAsync(filterSpecification);
+             var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
+             var totalItems = await _itemRepository.CountAsync(filterSpecification);
+
+           // var itemsOnPage = await ListCatalogItems(itemsPage * pageIndex, itemsPage, brandId, typeId);
+            //var totalItems = await CountCatalogItems(brandId, typeId);
 
             foreach (var itemOnPage in itemsOnPage)
             {
@@ -124,7 +161,9 @@ namespace Microsoft.eShopWeb.Web.Services
         public async Task<IEnumerable<SelectListItem>> GetTypes(CancellationToken cancellationToken = default(CancellationToken))
         {
             _logger.LogInformation("GetTypes called.");
-            var types = await _typeRepository.ListAllAsync();
+            //var types = await _typeRepository.ListAllAsync();
+            // var types = await _catalogContext.Set<CatalogType>().ToListAsync();
+            var types = await _catalogContext.CatalogTypes.ToListAsync();
             var items = new List<SelectListItem>
             {
                 new SelectListItem() { Value = null, Text = "All", Selected = true }
