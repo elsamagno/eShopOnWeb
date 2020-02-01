@@ -23,7 +23,9 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
             string expectedResult,
             Type exceptionType= null
             )  
+
   {
+
       if(string.IsNullOrEmpty(expectedResult)){
           if(exceptionType == null){
               throw new  Exception("Missing exception type to check");  
@@ -33,7 +35,9 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
               () => CacheHelpers.GenerateCatalogItemCacheKey(
                   pageIndex, itemPerPage, searchText, brandId, typeId
               ));
-      } else {
+      } 
+      else 
+      {
               
             var result = CacheHelpers.GenerateCatalogItemCacheKey(
                 pageIndex, itemPerPage, searchText, brandId, typeId);
