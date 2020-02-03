@@ -8,6 +8,7 @@ using System.Linq;
 using Xunit;
 using System.Threading.Tasks;
 
+
 namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Services.BasketServiceTests
 {
     public class SetQuantities
@@ -39,14 +40,14 @@ namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Services.BasketServiceTes
             await Assert.ThrowsAsync<ArgumentNullException>(async () =>
                 await basketService.SetQuantities(123, null));
         }
-    }
-}
- [Fact]
+        
+        [Fact]
         public async Task Update_ExistingItemQty_Succeeds() {
             var basketId = 10;
             var basket = new Basket();
             var itemId = 1;
             basket.AddItem(itemId, 10, 1);
+
             var targetItem = basket.Items.First();
             targetItem.Id = itemId;
             // targetItem.Id = itemId;
@@ -64,6 +65,51 @@ namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Services.BasketServiceTes
             Assert.Equal(targetItemQty, targetItem.Quantity);
             _mockBasketRepo.Verify(x => x.UpdateAsync(basket), Times.Once());
         }
+ 
+        [Theory]
+        [InlineData(4)]
+        // [InlineData(4,2)]
+        // [InlineData(4,3)]
+        // [InlineData(4,4)]            
+        public async Task SetQuantityToZero_Removes_Item_From_Basket(
+            int numInitiallItemsBasket) {
+            var random = new Random();
+            var basketId = 10;
+            var basket = new Basket();
+            var itemPrice = 10;
+        
 
+           foreach (var itemId in Enumerable.Range(1,numInitiallItemsBasket)) {
+               var initialQty = random.Next(1,10); 
+               basket.AddItem(itemId, itemPrice, initialQty);
+           }
+           
+            foreach (var item in basket.Items){
+                item.Id = item.CatalogItemId;
+            }
+              //end initial basket
+          
+            var initialItemsCount = basket.Items.Count;
+
+  // targetItem.Id = itemId;
+            _mockBasketRepo.Setup(
+                x => x.GetByIdAsync(basketId)).ReturnsAsync(basket);
+
+            var basketService = new BasketService(_mockBasketRepo.Object, null);
+            var itemIdToRemove = random.Next(1,numInitiallItemsBasket);
+            var itemToRemove = basket.Items.Where(item => item.Id == itemIdToRemove).First();
+          
+            var quantities = new System.Collections.Generic.Dictionary<string, int>();
+                 quantities.Add(itemToRemove.Id.ToString(),0);
+                 var numitemsToRemove = quantities.Count;
+            
+            await basketService.SetQuantities(
+                    basketId,
+                    quantities);
+                 
+            Assert.True(basket.Items.Count == initialItemsCount -numitemsToRemove);
+         
+            _mockBasketRepo.Verify(x => x.UpdateAsync(basket), Times.Once());
+        }
     }
 }
