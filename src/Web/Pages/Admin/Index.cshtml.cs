@@ -12,7 +12,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
     [Authorize(Roles = AuthorizationConstants.Roles.ADMINISTRATORS)]
     public class IndexModel : PageModel
     {
-        private const string SearchText = "TODO";
+       
         private readonly ICatalogViewModelService _catalogViewModelService;
         private readonly IMemoryCache _cache;
 
@@ -23,13 +23,14 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
         }
 
         public CatalogIndexViewModel CatalogModel { get; set; } = new CatalogIndexViewModel();
+        [Authorize(Roles="Administrators")]
 
         public async Task OnGet(CatalogIndexViewModel catalogModel, int? pageId)
         {
             var cacheKey = CacheHelpers.GenerateCatalogItemCacheKey(
                 pageId.GetValueOrDefault(),
                 Constants.ITEMS_PER_PAGE,
-                SearchText,
+                catalogModel.SearchText,
                 catalogModel.BrandFilterApplied,
                 catalogModel.TypesFilterApplied);
 
@@ -38,7 +39,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
             CatalogModel = await _catalogViewModelService.GetCatalogItems(
                 pageId.GetValueOrDefault(),
                  Constants.ITEMS_PER_PAGE, 
-                 "TODO", 
+                 catalogModel.SearchText, 
                  catalogModel.BrandFilterApplied, 
                  catalogModel.TypesFilterApplied, 
                  HttpContext.RequestAborted);
