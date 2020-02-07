@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Entities
@@ -12,8 +14,9 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities
         public int CatalogTypeId { get; set; }
         public int CatalogBrandId { get; set; }
 
-        [DefaultValue(true)]
-        public bool ShowPrice { get; set; } = true;
+        [DefaultValue(true)]dotnet
+        public bool ShowPrice { get; set; }
+        public int StockLoja { get; set; }
         
 
         #region "Navigation properties"
