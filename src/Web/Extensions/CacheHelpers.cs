@@ -16,7 +16,7 @@ namespace Microsoft.eShopWeb.Web.Extensions
             int pageIndex, int itemsPage,
             string searchText, int? brandId, int? typeId)
         {
-              if (pageIndex < 0) {
+            if (pageIndex < 0) {
                 throw new InvalidPageIndexException();
             }
             return string.Format(

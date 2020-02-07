@@ -11,8 +11,8 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
 
         [Theory]
         [InlineData(0, Constants.ITEMS_PER_PAGE, null,null,null, "items-0-10---")]
-        [InlineData(5,20, null,null,null, "items-5-20---")]
-        [InlineData(-5,20, null,null,null,null,typeof(InvalidPageIndexException))] 
+        [InlineData(5, 20, null,null,null, "items-5-20---")]
+        [InlineData(-5, 20, null,null,null,null, typeof(InvalidPageIndexException))] 
         public void ReturnCatalogItemCacheKey(
       
             int pageIndex,
@@ -47,7 +47,4 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
     }
 }
 
-    internal class InvalidPageIndexException
-    {
-    }
 }
