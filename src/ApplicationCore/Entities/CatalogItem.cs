@@ -18,7 +18,7 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities
         public bool ShowPrice { get; set; }
         public int StockLoja { get; set; }
         
-       List<StockPerStore> StockPerStore {get; set; }
+       Public List<StockPerStore> StockPerStore {get; set; }
        
         #region "Navigation properties"
         public CatalogType CatalogType { get; set; }
