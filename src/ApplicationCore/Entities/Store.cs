@@ -7,6 +7,6 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities
     {
        
         public string StoreName { get; set; }
-        public List<StockPerStore> StockPerStore {get; set}
+        public List<StockPerStore> StockPerStore { get; set; }
     }
 }

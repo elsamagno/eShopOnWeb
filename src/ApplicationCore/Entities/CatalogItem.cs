@@ -16,7 +16,7 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities
 
         [DefaultValue(true)]dotnet
         public bool ShowPrice { get; set; }
-        public int StockLoja { get; set; }
+        public int StockPerStore { get; set; }
         
        Public List<StockPerStore> StockPerStore {get; set; }
        
