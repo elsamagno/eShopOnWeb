@@ -9,12 +9,16 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+
   </ItemGroup>
 
 
   <ItemGroup>
     <PackageReference Include="Ardalis.ListStartupServices" Version="1.1.3" />
-
+    <PackageReference Include="IronPdf" Version="2020.1.0" />
+    <PackageReference Include="Swagger-Net" Version="8.3.24.301" />
+    <PackageReference Include="PDF.Core" Version="2020.0.0" />
+    <PackageReference Include="Localization.AspNetCore.TagHelpers" Version="0.6.0" />
     <PackageReference Include="MediatR" Version="7.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" Condition="'$(Configuration)'=='Release'" PrivateAssets="All" />

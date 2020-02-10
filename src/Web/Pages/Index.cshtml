@@ -1,8 +1,20 @@
 ﻿@page
+@inject IViewLocalizer Localizer
+
+@{
+      @* IDictionary<string, string> buildQueryStringDict() {
+		var queryStringDict = Context.Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
+		return queryStringDict;
+	} *@
+
 @{
     ViewData["Title"] = "Catalog";
     @model IndexModel
 }
+    var href = $"/reports/pdf/catalog{HttpContext.Request.QueryString.ToString()}";
+
+<P>@Localizer["Hello"]</P>
+
 <section class="esh-catalog-hero">
     <div class="container">
         <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
@@ -53,6 +65,9 @@
                 break;
         }
         @await Html.PartialAsync("_pagination", Model.CatalogModel.PaginationInfo);
+    
+      @* <a href="/pdf/" target="_blank"><img src="images/document/icon_pdf_64.png"></a> *@
+        <a href="@href" target="_blank"><img src="images/document/icon_pdf_64.png"></a>
     }
     else
     {
