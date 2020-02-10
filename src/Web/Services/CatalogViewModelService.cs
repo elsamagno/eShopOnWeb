@@ -206,18 +206,17 @@ namespace Microsoft.eShopWeb.Web.Services
                 throw new ModelNotFoundException(message,ex);
             }
         }
-          public async Task<IReadOnlyList<StockPerStore>> GetStockByItemId(int id, CancellationToken cancellationToken = default)
+          public async Task<List<StockPerStore>> GetStockById(int IdItem, CancellationToken cancellationToken = default)
         {
-            var item = await _itemRepository.GetByIdAsync(id);
+            var item = await _itemRepository.GetByIdAsync(IdItem;
             if (item == null)
             {
-                throw new ModelNotFoundException($"Catalog item not found. id={id}");
+                throw new ModelNotFoundException($"Catalog item not found. id={IdItem}");
             }
 
-            var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
-            var whereExp = new List<Expression<Func<CatalogItem, bool>>>();
+             var query = _catalogContext.StockPerStore.Where(stockPerStore => stockPerStore.ItemId == IdItem);
 
-            return null;
+             return await query.ToListAsync();
         }
 
         public Task<CatalogIndexViewModel> GetCatalogItems(int v1, int iTEMS_PER_PAGE, string v2, int? brandFilterApplied, int? typesFilterApplied, CancellationToken requestAborted)
