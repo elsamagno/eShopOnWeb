@@ -20,3 +20,4 @@ namespace Microsoft.eShopWeb.Web.Controllers.Pdf
             return File(pdf.BinaryData, "application/pdf;", "Catalog.pdf");
         }
     }
+}

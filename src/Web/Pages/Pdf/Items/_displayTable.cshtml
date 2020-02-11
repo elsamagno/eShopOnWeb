@@ -14,8 +14,8 @@
 			@if(catalogItem.ShowPrice)
 			{
 				<td class="esh-catalog-price">
-					@catalogItem.Price.ToString("N2")
-					<span class="product-price-unit">@catalogItem.PriceSymbol</span>
+					<span>@catalogItem.Price.ToString("N2")</span>
+					<span>@catalogItem.PriceUnit</span>
 				</td>
 			}
 			else{

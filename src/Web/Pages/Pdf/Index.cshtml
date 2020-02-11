@@ -13,7 +13,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Microsoft.eShopOnWeb</title>
-    <environment names="Development,Azure,Casa">
+    <environment names="Development,Azure">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/app.css" />
         <link rel="stylesheet" href="~/css/app.component.css" />
@@ -24,6 +24,7 @@
         <link rel="stylesheet" href="~/css/basket/basket-status/basket-status.component.css" />
         <link rel="stylesheet" href="~/css/catalog/catalog.component.css" />
         <link rel="stylesheet" href="~/css/orders/orders.component.css" />
+        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.5/css/bootstrap.min.css"
@@ -38,30 +39,7 @@
             @if (Model.CatalogModel.CatalogItems.Any())
             {
 
-                if(Model.CatalogPageModel.ViewMode == ViewsModes.Table){
-                    <partial name="Pdf/Items/_displayTable" for="CatalogModel.CatalogItems"/>
-                }
-                else if(Model.CatalogPageModel.ViewMode == ViewsModes.List){
-                    Func<dynamic, object> listTemplate = @<partial name="Pdf/Items/_productList" for="@item"/>;
-                    var listItemViewModel = new SampleItemViewModel(){
-                        Items = Model.CatalogModel.CatalogItems,
-                        Template = listTemplate,
-                        Ordered = false,
-                        ListClass = "ListClass",
-                        ListItemClass = "ListItemClass"
-                    };
-                    <partial name="DisplayItems/_displayList" for="@listItemViewModel"/>
-                }
-                else{
-                    Func<dynamic, object> listTemplate = @<partial name="Pdf/Items/_product" for="@item"/>;
-                    var listItemViewModel = new SampleItemViewModel(){
-                        Items = Model.CatalogModel.CatalogItems,
-                        Template = listTemplate,
-                        ListClass = "esh-catalog-items row",
-                        ListItemClass = "esh-catalog-item col-md-4"
-                    };
-                    <partial name="DisplayItems/_displayGallery" for="@listItemViewModel"/>
-                }
+                <partial name="Pdf/Items/_displayTable" for="CatalogModel.CatalogItems"/>
 
             }
             else

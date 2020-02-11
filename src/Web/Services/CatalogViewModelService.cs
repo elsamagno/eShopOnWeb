@@ -208,7 +208,7 @@ namespace Microsoft.eShopWeb.Web.Services
         }
           public async Task<List<StockPerStore>> GetStockById(int IdItem, CancellationToken cancellationToken = default)
         {
-            var item = await _itemRepository.GetByIdAsync(IdItem;
+            var item = await _itemRepository.GetByIdAsync(IdItem);
             if (item == null)
             {
                 throw new ModelNotFoundException($"Catalog item not found. id={IdItem}");

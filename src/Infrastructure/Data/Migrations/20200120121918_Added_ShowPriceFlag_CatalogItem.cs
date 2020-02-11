@@ -10,7 +10,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 name: "ShowPrice",
                 table: "Catalog",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

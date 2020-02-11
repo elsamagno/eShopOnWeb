@@ -11,7 +11,6 @@ namespace Microsoft.eShopWeb.Web.ViewModels
         public string PictureUri { get; set; }
         public decimal Price { get; set; }
         public bool ShowPrice { get; set; }
-        public List<StockPerStore> StockPerStore { get; set; }
         public Currency PriceUnit {get; set;}
         public List<StockPerStoreViewModel> StockPerStore { get; set; }
 

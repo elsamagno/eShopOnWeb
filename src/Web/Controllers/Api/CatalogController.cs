@@ -33,6 +33,7 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
             } catch (ModelNotFoundException) {
                 return NotFound();
             }
+        }
             
              [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
