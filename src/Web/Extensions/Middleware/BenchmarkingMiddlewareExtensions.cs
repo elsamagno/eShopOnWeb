@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Web.Middleware;
+using Microsoft.eShopWeb.Web.Middleware;
 
 namespace Web.Extensions.Middleware
 {
