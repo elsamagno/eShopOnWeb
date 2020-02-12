@@ -35,11 +35,11 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
             }
         }
             
-             [HttpGet("{id}")]
+       [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<List<StockPerStore>>> GetStockListById(int id)
         {
-            try
+         try
             {
                 List<StockPerStore> stock = await _catalogViewModelService.GetStockById(id);
                 return Ok(stock);

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
-
+using Microsoft.AspNetCore.Routing;
 using Ardalis.ListStartupServices;
 using Infrastructure.Services;
 using Infrastructure.Services.CurrencyService;
 using MediatR;
-
+using Microsoft.eShopWeb.Web.Extensions.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +30,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Globalization;
-
+using static Microsoft.eShopWeb.Web.Middleware.UrlRequestCultureProvider;
 using Newtonsoft.Json;
 using Web.Extensions;
 
@@ -159,7 +159,7 @@ namespace Microsoft.eShopWeb.Web {
                     new SlugifyParameterTransformer()));
 
               })
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, opts => { opts.ResourcesPath = "Resources"; })
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, services.AddMvc() })
                 .AddDataAnnotationsLocalization();
 
             services.AddRazorPages(options => {
@@ -179,22 +179,7 @@ namespace Microsoft.eShopWeb.Web {
                 config.Path = "/allservices";
             });
 
-            services.Configure<RequestLocalizationOptions>(
-                opts =>
-                {
-                    var supportedCultures = new List<CultureInfo>
-                    {
-                        new CultureInfo("en"),
-                        new CultureInfo("pt-PT"),
-                    };
-
-                    opts.DefaultRequestCulture = new RequestCulture("en");
-                    // Formatting numbers, dates, etc.
-                    opts.SupportedCultures = supportedCultures;
-                    // UI strings that we have localized.
-                    opts.SupportedUICultures = supportedCultures;
-                });
-
+         
 
             _services = services; // used to debug registered services
         }
@@ -202,6 +187,7 @@ namespace Microsoft.eShopWeb.Web {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             app.UseBenchmarking();
+            app.UseRequestCulture();
             app.UseHealthChecks("/health",
                 new HealthCheckOptions {
                     ResponseWriter = async(context, report) => {
@@ -227,20 +213,17 @@ namespace Microsoft.eShopWeb.Web {
                 app.UseHsts();
             }
 
-            app.UseStaticFiles();
-
-              var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
-
-            app.UseRequestLocalization(options.Value);
-
+          
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    name: "Default",
+                    template: "{culture}/{controller}/{action}/{id?}",
+                    defaults: new { culture = "en-US", controller = "Home", action = "Index" });
+
             });
             
-            
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseHttpsRedirection();

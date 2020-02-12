@@ -82,7 +82,7 @@ namespace Microsoft.eShopWeb.Web.Services
             var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
             var whereExpr = new List<Expression<Func<CatalogItem, bool>>>();
             if(brandId.HasValue){
-                query = query.Where(x=> x.CatalogBrandId == brandId.Value);
+               // query = query.Where(x=> x.CatalogBrandId == brandId.Value);
                 whereExpr.Add(x => x.CatalogBrandId == brandId.Value);
             }
             if(typeId.HasValue){
