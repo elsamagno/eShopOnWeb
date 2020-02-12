@@ -13,24 +13,23 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
+
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.ApplicationCore.Services;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Infrastructure.Logging;
 using Microsoft.eShopWeb.Infrastructure.Services;
-using Microsoft.eShopWeb.Web.Interfaces;
+
 using Microsoft.eShopWeb.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+
 using System.Globalization;
-using static Microsoft.eShopWeb.Web.Middleware.UrlRequestCultureProvider;
+
 using Newtonsoft.Json;
 using Web.Extensions;
 
@@ -159,6 +158,9 @@ namespace Microsoft.eShopWeb.Web {
                     new SlugifyParameterTransformer()));
 
               })
+           
+            services.AddLocalization(options => { options.ResourcesPath = "Pages/Resources"; });
+                
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, services.AddMvc() })
                 .AddDataAnnotationsLocalization();
 
@@ -214,14 +216,7 @@ namespace Microsoft.eShopWeb.Web {
             }
 
           
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "Default",
-                    template: "{culture}/{controller}/{action}/{id?}",
-                    defaults: new { culture = "en-US", controller = "Home", action = "Index" });
-
-            });
+        
             
             app.UseStaticFiles();
             app.UseRouting();
@@ -241,6 +236,7 @@ namespace Microsoft.eShopWeb.Web {
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute("default", "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+                endpoints.MapControllerRoute("culture", "{culture:slugify=en-US}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
                 endpoints.MapRazorPages();
                 endpoints.MapHealthChecks("home_page_health_check");
                 endpoints.MapHealthChecks("api_health_check");
