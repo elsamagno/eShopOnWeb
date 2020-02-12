@@ -13,14 +13,14 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Infrastructure.Logging;
 using Microsoft.eShopWeb.Infrastructure.Services;
-
+using Microsoft.eShopWeb.Web.Middleware;
 using Microsoft.eShopWeb.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -166,6 +166,12 @@ namespace Microsoft.eShopWeb.Web {
 
             services.AddRazorPages(options => {
                 options.Conventions.AuthorizePage("/Basket/Checkout");
+           
+             }).AddRazorPagesOptions(options =>
+            { 
+                options.Conventions.Add(new CustomCultureRouteModelConvention());
+                options.Conventions.AuthorizePage("/Basket/Checkout");
+
             });
             services.AddControllersWithViews();
 
@@ -189,7 +195,7 @@ namespace Microsoft.eShopWeb.Web {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             app.UseBenchmarking();
-            app.UseRequestCulture();
+         
             app.UseHealthChecks("/health",
                 new HealthCheckOptions {
                     ResponseWriter = async(context, report) => {
@@ -220,7 +226,7 @@ namespace Microsoft.eShopWeb.Web {
             
             app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseRequestCulture();
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseAuthentication();
@@ -235,8 +241,8 @@ namespace Microsoft.eShopWeb.Web {
             });
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapControllerRoute("default", "{controller:slugify=Home}/{action:slugify=Index}/{id?}");
-                endpoints.MapControllerRoute("culture", "{culture:slugify=en-US}/{controller:slugify=Home}/{action:slugify=Index}/{id?}");
+                 // endpoints.MapControllerRoute(name: "culture-route", pattern:"{culture=en-US}/{controller=Home}/{action=Index}/{id?}"); 
+                endpoints.MapControllerRoute( name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
                 endpoints.MapHealthChecks("home_page_health_check");
                 endpoints.MapHealthChecks("api_health_check");
