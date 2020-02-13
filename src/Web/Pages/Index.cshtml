@@ -1,6 +1,8 @@
 ﻿@page
 @using Microsoft.AspNetCore.Mvc.Localization
-@inject IViewLocalizer Localizer
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<IndexModel> Localizer
+@inject IHtmlLocalizer<IndexModel> HtmlLocalizer
 
 @{
  
@@ -11,6 +13,8 @@
 <p>Current culture: @System.Globalization.CultureInfo.CurrentCulture.DisplayName</p>
 <p>Current UI culture: @System.Globalization.CultureInfo.CurrentUICulture.DisplayName</p>
    
+<p>Current culture: @System.Globalization.CultureInfo.CurrentCulture.Name</p>
+
     var href = $"/reports/pdf/catalog{HttpContext.Request.QueryString.ToString()}";
 }
 <h2>@ViewData["MyTitle"]</h2>
