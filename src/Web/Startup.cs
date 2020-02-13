@@ -28,12 +28,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
-using System.Globalization;
-
 using Newtonsoft.Json;
-using Web.Extensions;
-
-using Web.Extensions.Middleware;
 using Microsoft.AspNetCore.Mvc;
 
 [assembly : ApiConventionType(typeof(DefaultApiConventions))]
@@ -153,26 +148,22 @@ namespace Microsoft.eShopWeb.Web {
                 options.ConstraintMap["slugify"] = typeof(SlugifyParameterTransformer);
             });
 
-            services.AddMvc(options => {
-                options.Conventions.Add(new RouteTokenTransformerConvention(
-                    new SlugifyParameterTransformer()));
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-              })
-           
-            services.AddLocalization(options => { options.ResourcesPath = "Pages/Resources"; });
-                
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, services.AddMvc() })
+            services.AddMvc()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
-
-            services.AddRazorPages(options => {
+                
+            services.AddRazorPages(options =>
+            {
                 options.Conventions.AuthorizePage("/Basket/Checkout");
-           
              }).AddRazorPagesOptions(options =>
             { 
                 options.Conventions.Add(new CustomCultureRouteModelConvention());
                 options.Conventions.AuthorizePage("/Basket/Checkout");
 
             });
+
             services.AddControllersWithViews();
 
             services.AddHttpContextAccessor();
