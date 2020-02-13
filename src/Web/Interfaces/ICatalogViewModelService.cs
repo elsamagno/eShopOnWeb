@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.eShopWeb.ApplicationCore.Entities;
+
 using Microsoft.eShopWeb.Web.ViewModels;
 using System.Collections.Generic;
 using System.Threading;
@@ -30,7 +30,7 @@ namespace Microsoft.eShopWeb.Web.Services
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
         Task<CatalogItemViewModel> GetItemById(int id, bool convertPrice = true, CancellationToken cancellationToken = default(CancellationToken));
-        Task<List<StockPerStore>> GetStockById(int IdItem, CancellationToken cancellationToken = default(CancellationToken));
+
         Task<CatalogIndexViewModel> GetCatalogItems(int v1, int iTEMS_PER_PAGE, string v2, int? brandFilterApplied, int? typesFilterApplied, CancellationToken requestAborted);
     }
 
