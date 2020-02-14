@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.eShopWeb.ApplicationCore.Constants;
 using Microsoft.eShopWeb.Web.Extensions;
 using Microsoft.eShopWeb.Web.Services;
 using Microsoft.eShopWeb.Web.ViewModels;
 using Microsoft.Extensions.Caching.Memory;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Microsoft.eShopWeb.Web.Pages.Admin
@@ -41,8 +43,10 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
                  Constants.ITEMS_PER_PAGE, 
                  catalogModel.SearchText, 
                  catalogModel.BrandFilterApplied, 
-                 catalogModel.TypesFilterApplied, 
+                 catalogModel.TypesFilterApplied,
+                 convertPrice: false,
                  HttpContext.RequestAborted);
+                 CatalogModel.ResultViews = Enum<ResultView>.GetAll().Select(resultView => new SelectListItem { Value = resultView.ToString(), Text = resultView.ToString() });
         }
     }
 }

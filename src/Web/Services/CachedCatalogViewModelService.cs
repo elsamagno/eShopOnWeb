@@ -52,11 +52,6 @@ namespace Microsoft.eShopWeb.Web.Services
             });
         }
 
-        public Task<CatalogIndexViewModel> GetCatalogItems(int v1, int iTEMS_PER_PAGE, string v2, int? brandFilterApplied, int? typesFilterApplied, CancellationToken requestAborted)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<CatalogItemViewModel> GetItemById(int id,  bool convertPrice = true, CancellationToken cancellationToken = default)
         {
             return await _cache.GetOrCreateAsync(CacheHelpers.GenerateCatalogItemIdKey(id), async entry =>

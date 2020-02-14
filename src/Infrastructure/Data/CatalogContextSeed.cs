@@ -88,7 +88,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data {
         static IEnumerable<CatalogItem> GetPreconfiguredItems() {
             return new List<CatalogItem>() 
             {
-                new CatalogItem() { CatalogTypeId = 2, CatalogBrandId = 2, Description = ".NET Bot Black Sweatshirt", Name = ".NET Bot Black Sweatshirt", Price = 19.5M, PictureUri = "http://catalogbaseurltobereplaced/images/products/1.png" },
                 new CatalogItem() { CatalogTypeId=2,CatalogBrandId=2, Description = ".NET Bot Black Sweatshirt", Name = ".NET Bot Black Sweatshirt", Price = 19.5M, PictureUri = "http://catalogbaseurltobereplaced/images/products/1.png"},
                 new CatalogItem() { CatalogTypeId = 1, CatalogBrandId = 2, Description = ".NET Black & White Mug", Name = ".NET Black & White Mug", Price = 8.50M, PictureUri = "http://catalogbaseurltobereplaced/images/products/2.png"},
                 new CatalogItem() { ShowPrice = false, CatalogTypeId = 2, CatalogBrandId = 5, Description = "Prism White T-Shirt", Name = "Prism White T-Shirt", Price = 12, PictureUri = "http://catalogbaseurltobereplaced/images/products/3.png" },
