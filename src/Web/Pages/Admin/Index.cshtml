@@ -11,6 +11,7 @@
 <section class="esh-catalog-filters">
     <div class="container">
         <form method="get">
+            <a href="~/Admin/AddItem" class="btn btn-success">Add Item</a>
             <label class="esh-catalog-label" data-title="brand">
                 <select asp-for="@Model.CatalogModel.BrandFilterApplied" asp-items="@Model.CatalogModel.Brands" class="esh-catalog-filter"></select>
             </label>
