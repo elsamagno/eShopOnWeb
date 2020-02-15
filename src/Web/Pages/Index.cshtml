@@ -1,12 +1,11 @@
 ﻿@page
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Localization
-@inject IStringLocalizer<IndexModel> Localizer
-@inject IHtmlLocalizer<IndexModel> HtmlLocalizer
+@inject IViewLocalizer Localizer
 
 @{
  
-    ViewData["Title"] = Localizer["Catalog"];
+    ViewData["Title"] = "Catalog";
     @model IndexModel
 
 
@@ -19,7 +18,7 @@
 }
 <h2>@ViewData["MyTitle"]</h2>
 
-<p>@Localizer["test"]</p>
+<h1>@Localizer["hello"]</h1>
 
 <section class="esh-catalog-hero">
     <div class="container">

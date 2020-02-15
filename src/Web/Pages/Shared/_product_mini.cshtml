@@ -2,9 +2,11 @@
 
 <form asp-page="/Basket/Index" method="post">
     
-        <a data-toggle="modal" data-target="#MyModal_@Model.Id"><img class="esh-catalog-thumbnail" src="@Model.PictureUri" style="height: 50px; width: auto;"/></a>
-    
-  <div class="modal" id="MyModal_@Model.Id">
+         <a data-toggle="modal" data-target="#MyModal_@Model.Id">
+        <img class="esh-catalog-thumbnail" src="@Model.PictureUri" style="height: 50px; width: auto;" />
+    </a>
+
+    <div class="modal" id="MyModal_@Model.Id">
         <div class="modal-dialog">
             <div class="modal-content">
                 <!-- Modal Header -->
@@ -16,9 +18,7 @@
 
                 <!-- Modal body -->
                 <div class="modal-body">
-            @await Component.InvokeAsync("StockPerStore", new { catalogItemId = @Model.Id })
-           
-         
+                    @await Component.InvokeAsync("StockPerStore", new { catalogItemId = @Model.Id })
                 </div>
             </div>
         </div>
