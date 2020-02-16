@@ -41,7 +41,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Services
 
             var client = new SendGridClient(apiKeyString);
             var response = await client.SendEmailAsync(sendGridMessage);
-            if(response.StatusCode == HttpStatusCode.OK){}
+            if(response.StatusCode == HttpStatusCode.Confirmation){}
 
             else{ throw new Exception(response.ToString());}
             // TODO: Wire this up to actual email sending logic via SendGrid, local SMTP, etc.

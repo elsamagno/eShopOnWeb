@@ -1,0 +1,12 @@
+{{ greeting }} Hello,
+
+
+Our products have new promotions.
+
+{{ if PriceChanged }}
+"The price of the product reached a lower value."
+{{ end }}
+
+
+Enjoy the shopping,
+The Diel Mare EShopOnWeb
