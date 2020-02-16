@@ -6,6 +6,7 @@ using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Scriban;
 using Scriban.Runtime;
 using System;
@@ -21,6 +22,7 @@ namespace Microsoft.eShopWeb.Web.Services
         private readonly SignInUser<ApplicationUser> _signInUser;
         private readonly IAsyncRepository<CatalogItem> _itemRepository;
         private readonly IEmailSender _emailSender;
+        private readonly ILogger<CatalogNotifications> _logger;
         private IServiceProvider _serviceProvider;
         public CatalogNotifications(IAsyncRepository<CatalogItem> itemRepository, IEmailSender emailSender){
            
@@ -28,17 +30,45 @@ namespace Microsoft.eShopWeb.Web.Services
             _emailSender = emailSender;
             _signInUser = signInUser;
             _serviceProvider = serviceProvider;
+            _logger = loggerFactory.CreateLogger<CatalogNotifications>();
 
-              var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
-            TemplateSubject = configuration.GetValue<string>("SendGrid:templateSubject");
-            TemplateBody = configuration.GetValue<string>("SendGrid:TemplateMessage");
+            //   var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
+            // TemplateSubject = configuration.GetValue<string>("SendGrid:templateSubject");
+            // TemplateMessage = configuration.GetValue<string>("SendGrid:TemplateMessage");
+       
+        new Action(async () => {await loadTemplatesDataAsync();}).Invoke();
         }
-        private string TemplateSubject;
-        private string TemplateMessage;
+        private Template templateSubject;
+        private Template templateMessage;
+        private string greeting = "Good Morning";
+
+
+        private async Task loadTemplatesDataAsync(){
+            var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
+
+            // for email subject
+            var pathTemplateSubject    = configuration.GetValue<string>("SendGrid:templateSubject");
+            var templateContentSubject = await File.ReadAllTextAsync(pathTemplateSubject); 
+            templateSubject            = Template.Parse(templateContentSubject);
+
+            // for email message
+            var pathTemplateMessage   = configuration.GetValue<string>("SendGrid:TemplateMessage");
+            var templateContentMessage = await File.ReadAllTextAsync(pathTemplateMessage); 
+            templateBody            = Template.Parse(templateContentMessage;
+
+            // greeting
+            int hour = DateTimeOffset.Now.Hour;
+            if(19 < hour){ greeting = "Good Evening";}
+            else if(12 < hour){ greeting = "Good Afternoon";}
+        }
+
+
 
 //Catalog Item notification
 
         public async Task CatalogItemsNotificationAsync(int itemId, decimal priceNew){
+             _logger.LogInformation("Inicialize catalog items notification...");
+
             var catalogItem = await _itemRepository.GetByIdAsync(itemId);
             var users = _signInUser.UserUser.Users.ToList();
 
@@ -50,24 +80,10 @@ namespace Microsoft.eShopWeb.Web.Services
             if(priceNew != catalogItem.Price){ anyChanges = true;}
 
             if(anyChanges){
-                // greeting
-                int hour = DateTimeOffset.Now.Hour;
-                var greeting = "Good morning";
-                if(19 < hour){ greeting = "Good evening";}
-                else if(12 < hour){ greeting = "Good afternoon";}
-
+              
                 MemberRenamerDelegate memberRenamer = member => member.Name;
 
-                //email subject
-                var templateContentSubject = await File.ReadAllTextAsync(TemplateSubject);
-                // Parse a scriban template
-                var templateSubject = Template.Parse(templateContentSubject);
-                var subject = templateSubject.Render(new { CatalogItem = catalogItem }, memberRenamer);
-
-                //email message
-                var templateContentBody = await File.ReadAllTextAsync(TemplateMessage);
-                // Parse a scriban template
-                var templateMessage = Template.Parse(templateContentMessage);
+        
                 var message = templateMessage.Render(
                         new { Greeting =  greeting, PriceChanged = priceNew != catalogItem.Price}
                     );
