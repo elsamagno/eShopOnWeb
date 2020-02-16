@@ -40,7 +40,7 @@ namespace Microsoft.eShopWeb.Web.Services
         }
         private Template templateSubject;
         private Template templateMessage;
-        private string greeting = "Good Morning";
+        private string greeting = "Hello welcome" ;
 
 
         private async Task loadTemplatesDataAsync(){
@@ -54,12 +54,12 @@ namespace Microsoft.eShopWeb.Web.Services
             // for email message
             var pathTemplateMessage   = configuration.GetValue<string>("SendGrid:TemplateMessage");
             var templateContentMessage = await File.ReadAllTextAsync(pathTemplateMessage); 
-            templateBody            = Template.Parse(templateContentMessage;
+            templateMessage           = Template.Parse(templateContentMessage;
 
             // greeting
             int hour = DateTimeOffset.Now.Hour;
-            if(19 < hour){ greeting = "Good Evening";}
-            else if(12 < hour){ greeting = "Good Afternoon";}
+            { greeting = "Hello welcome";}
+            
         }
 
 

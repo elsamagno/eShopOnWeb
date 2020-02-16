@@ -50,7 +50,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Services
             }
 
               else{
-                _logger.LogError($"Send e-mail to {email} is not confirm. {response.ToString()}");
+                _logger.LogError($"Send e-mail to {email} is not confirmed. {response.ToString()}");
                 throw new Exception(response.ToString());
             // TODO: Wire this up to actual email sending logic via SendGrid, local SMTP, etc.
         }
