@@ -136,12 +136,13 @@ namespace Microsoft.eShopWeb.Web {
                 services.AddSingleton<ICurrencyService, CurrencyServiceStatic>();
             } else {
                 services.AddSingleton<ICurrencyService, CurrencyServiceExternal>();
+                 services.AddTransient<IEmailSender, EmailSenderSendGrid>();
             }
             
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
             services.AddCatalogServices(Configuration);
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
-            services.AddTransient<IEmailSender, EmailSender>();
+          
 
             // Add memory cache services
             services.AddMemoryCache();
