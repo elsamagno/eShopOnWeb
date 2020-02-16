@@ -7,14 +7,18 @@ using Microsoft.Extensions.Configuration;
 using SendGrid;
 using System.Net;
 
+using Microsoft.Extensions.Logging;
+
 namespace Microsoft.eShopWeb.Infrastructure.Services
 {
     // This class is used by the application to send email for account confirmation and password reset.
     // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
     public class EmailSender : IEmailSender
     {
+        private readonly ILogger<EmailSenderSendGrid> _logger;
         private IServiceProvider _serviceProvider;
-        public EmailSenderSendGrid(IServiceProvider serviceProvider){
+         public EmailSenderSendGrid(ILoggerFactory loggerFactory, IServiceProvider serviceProvider){
+            _logger = loggerFactory.CreateLogger<EmailSenderSendGrid>();
             _serviceProvider = serviceProvider;
         }
 
@@ -41,9 +45,13 @@ namespace Microsoft.eShopWeb.Infrastructure.Services
 
             var client = new SendGridClient(apiKeyString);
             var response = await client.SendEmailAsync(sendGridMessage);
-            if(response.StatusCode == HttpStatusCode.Confirmation){}
+            if(response.StatusCode == HttpStatusCode.Confirmation){
+                  _logger.LogInformation($"Send e-mail to {email} is confirmed.");
+            }
 
-            else{ throw new Exception(response.ToString());}
+              else{
+                _logger.LogError($"Send e-mail to {email} is not confirm. {response.ToString()}");
+                throw new Exception(response.ToString());
             // TODO: Wire this up to actual email sending logic via SendGrid, local SMTP, etc.
         }
     }
