@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
-using Microsoft.eShopWeb.ApplicationCore.Entities.WishListAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.Infrastructure.Identity;
@@ -19,22 +18,19 @@ namespace Microsoft.eShopWeb.Web.Services
     
     public class CatalogNotifications
     {
-        private readonly SignInUser<ApplicationUser> _signInUser;
+        private readonly SignInManager<ApplicationUser> _signInUser;
         private readonly IAsyncRepository<CatalogItem> _itemRepository;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
         private readonly ILogger<CatalogNotifications> _logger;
-        private IServiceProvider _serviceProvider;
-        public CatalogNotifications(IAsyncRepository<CatalogItem> itemRepository, IEmailSender emailSender){
+
+        public CatalogNotifications(IAsyncRepository<CatalogItem> itemRepository, IEmailSender emailSender, SignInManager<ApplicationUser> signInUser, IConfiguration configuration, ILoggerFactory loggerFactory){
            
             _itemRepository = itemRepository;
             _emailSender = emailSender;
             _signInUser = signInUser;
-            _serviceProvider = serviceProvider;
+            _configuration = configuration;
             _logger = loggerFactory.CreateLogger<CatalogNotifications>();
-
-            //   var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
-            // TemplateSubject = configuration.GetValue<string>("SendGrid:templateSubject");
-            // TemplateMessage = configuration.GetValue<string>("SendGrid:TemplateMessage");
        
         new Action(async () => {await loadTemplatesDataAsync();}).Invoke();
         }
@@ -44,17 +40,16 @@ namespace Microsoft.eShopWeb.Web.Services
 
 
         private async Task loadTemplatesDataAsync(){
-            var configuration = _serviceProvider.GetRequiredService<IConfiguration>();
 
             // for email subject
-            var pathTemplateSubject    = configuration.GetValue<string>("SendGrid:templateSubject");
+            var pathTemplateSubject    = _configuration.GetValue<string>("SendGrid:templateSubject");
             var templateContentSubject = await File.ReadAllTextAsync(pathTemplateSubject); 
-            templateSubject            = Template.Parse(templateContentSubject);
+            templateSubject = Template.Parse(templateContentSubject);
 
             // for email message
-            var pathTemplateMessage   = configuration.GetValue<string>("SendGrid:TemplateMessage");
+            var pathTemplateMessage   = _configuration.GetValue<string>("SendGrid:TemplateMessage");
             var templateContentMessage = await File.ReadAllTextAsync(pathTemplateMessage); 
-            templateMessage           = Template.Parse(templateContentMessage;
+            templateMessage = Template.Parse(templateContentMessage);
 
             // greeting
             int hour = DateTimeOffset.Now.Hour;
@@ -70,7 +65,7 @@ namespace Microsoft.eShopWeb.Web.Services
              _logger.LogInformation("Inicialize catalog items notification...");
 
             var catalogItem = await _itemRepository.GetByIdAsync(itemId);
-            var users = _signInUser.UserUser.Users.ToList();
+            var users = _signInUser.UserManager.Users.ToList();
 
         }
        // / Catalog Item notification client
@@ -83,15 +78,16 @@ namespace Microsoft.eShopWeb.Web.Services
               
                 MemberRenamerDelegate memberRenamer = member => member.Name;
 
+                var subject = templateSubject.Render(new { CatalogItem = catalogItem }, memberRenamer);
         
                 var message = templateMessage.Render(
                         new { Greeting =  greeting, PriceChanged = priceNew != catalogItem.Price}
                     );
 
             await _emailSender.SendEmailAsync(email, subject, message);
+            }
         }
 
     }
 
-    
 }

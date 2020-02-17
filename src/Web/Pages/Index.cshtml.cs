@@ -15,7 +15,7 @@ namespace Microsoft.eShopWeb.Web.Pages {
     public class IndexModel : PageModel {
         private readonly ICatalogViewModelService _catalogViewModelService;
 
-        public IndexModel(ICatalogViewModelService catalogViewModelService, IStringLocalizer<IndexModel> stringLocalizer, IHtmlLocalizer<IndexModel> htmlLocalizer) {
+        public IndexModel(ICatalogViewModelService catalogViewModelService) {
             _catalogViewModelService = catalogViewModelService;
         }
 

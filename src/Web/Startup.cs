@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Routing;
 using Ardalis.ListStartupServices;
-using Infrastructure.Services;
+
 using Infrastructure.Services.CurrencyService;
 using MediatR;
 using Microsoft.eShopWeb.Web.Extensions.Middleware;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
+
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
@@ -136,7 +136,7 @@ namespace Microsoft.eShopWeb.Web {
                 services.AddSingleton<ICurrencyService, CurrencyServiceStatic>();
             } else {
                 services.AddSingleton<ICurrencyService, CurrencyServiceExternal>();
-                 services.AddTransient<IEmailSender, EmailSenderSendGrid>();
+                 services.AddTransient<IEmailSender, EmailSender>();
             }
             
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
