@@ -116,10 +116,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
- <data name="Previous" xml:space="preserve">
-    <value>Anterior</value>
+
+  <data name="No stock info" xml:space="preserve">
+    <value>Sem informação de Stock</value>
   </data>
-    <data name="Showing {0} of {1} products - Page {2} - {3}" xml:space="preserve">
-    <value>Mostrando {0} de {1} produtos - Página {2} - {3}</value>
+  <data name="Store" xml:space="preserve">
+    <value>Loja</value>
+  </data>  
+  <data name="Store" xml:space="preserve">
+    <value>unidades</value>
   </data>
 </root> 

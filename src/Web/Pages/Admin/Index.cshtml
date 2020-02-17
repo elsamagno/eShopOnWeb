@@ -1,25 +1,41 @@
 ﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Admin - Catalog";
+    ViewData["Title"] =  Localizer["title"];
     @model IndexModel
 }
 <section class="esh-catalog-hero">
     <div class="container">
-        <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
+        @if(@System.Globalization.CultureInfo.CurrentCulture.Name == "en-US") {
+            <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
+        }
     </div>
 </section>
 <section class="esh-catalog-filters">
     <div class="container">
         <form method="get">
             <a href="~/Admin/AddItem" class="btn btn-success">Add Item</a>
-            <label class="esh-catalog-label" data-title="brand">
+              <label class="esh-catalog-label" data-title=@Localizer["viewType"]>
+                <select asp-for="@Model.CatalogModel.ResultView"
+                asp-items="@Model.CatalogModel.ResultViews" class="esh-catalog-filter"></select>
+            </label>
+          
+               <label class="esh-catalog-label" data-title=@Localizer["brand"]>
                 <select asp-for="@Model.CatalogModel.BrandFilterApplied" asp-items="@Model.CatalogModel.Brands" class="esh-catalog-filter"></select>
             </label>
-            <label class="esh-catalog-label" data-title="type">
+
+                 <label class="esh-catalog-label" data-title=@Localizer["type"]>
                 <select asp-for="@Model.CatalogModel.TypesFilterApplied" asp-items="@Model.CatalogModel.Types" class="esh-catalog-filter"></select>
             </label>
-                <input type="text" asp-for="@Model.CatalogModel.SearchText" />
-            <input class="esh-catalog-send" type="image" src="images/arrow-right.svg" />
+
+             <label class="esh-catalog-label" data-title=@Localizer["search"]>
+                <input type="text" asp-for="@Model.CatalogModel.SearchFilter">
+            </label>
+               
+           <input class="esh-catalog-send" type="image" src="~/images/arrow-right.svg" />
         </form>
     </div>
 </section>
@@ -41,7 +57,7 @@
     else
     {
         <div class="esh-catalog-items row">
-            THERE ARE NO RESULTS THAT MATCH YOUR SEARCH
+              @Localizer["no results"]
         </div>
     }
 </div>

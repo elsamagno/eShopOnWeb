@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
+
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Infrastructure.Data;
@@ -155,22 +155,17 @@ namespace Microsoft.eShopWeb.Web {
 
                services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
 
-             services.AddMvc(options => {
-                options.Conventions.Add(new RouteTokenTransformerConvention(
-                    new SlugifyParameterTransformer()));
-            })
+             services.AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, options => {
                     options.ResourcesPath = "Resources";
                 })
                 .AddDataAnnotationsLocalization();
                 
-            services.AddRazorPages(options =>
-            {
-                options.Conventions.AuthorizePage("/Basket/Checkout");
-               })
+            services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.Add(new CustomCultureRouteModelConvention());
+                    options.Conventions.AuthorizePage("/Basket/Checkout");
                     options.Conventions.AuthorizePage("/Basket/Checkout");
                 });
 

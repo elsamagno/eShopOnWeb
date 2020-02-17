@@ -3,8 +3,8 @@
 <table>
     <thead>
         <th></th>
-        <th>Name</th>
-        <th>Price</th>
+        <th>@Localizer["Name"]</th>
+        <th>@Localizer["Price"]</th>
         <th></th>
     </thead>
     <tbody>
@@ -23,7 +23,7 @@
                                 <!-- Modal Header -->
                                 <div class="modal-header" style="color: white; background-color: #00A69C;">
                                     <br>
-                                    <h4 class="modal-title">Find in Store</h4>
+                                      <h4 class="modal-title">@Localizer["Find in Store"]</h4>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>
 
@@ -41,7 +41,7 @@
                 <span>@catalogItem.PriceUnit</span>
             <td>
                 <form asp-page="/Basket/Index" method="post">
-                    <input class="esh-catalog-button" style="width: auto" type="submit" value="[ ADD TO BASKET ]" />
+                   <input class="esh-catalog-button" style="width: auto" type="submit" value=@Localizer["ADD TO BASKET"] />
                     <input type="hidden" asp-for="@catalogItem.Id" name="id" />
                     <input type="hidden" asp-for="@catalogItem.Name" name="name" />
                     <input type="hidden" asp-for="@catalogItem.PictureUri" name="pictureUri" />

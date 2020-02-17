@@ -8,6 +8,7 @@ using Microsoft.eShopWeb.Web.ViewModels;
 using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.eShopWeb.Web.Pages.Admin
 {
@@ -18,7 +19,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
         private readonly ICatalogViewModelService _catalogViewModelService;
         private readonly IMemoryCache _cache;
 
-        public IndexModel(ICatalogViewModelService catalogViewModelService, IMemoryCache cache)
+         public IndexModel(ICatalogViewModelService catalogViewModelService)
         {
             _catalogViewModelService = catalogViewModelService;
             _cache = cache;
