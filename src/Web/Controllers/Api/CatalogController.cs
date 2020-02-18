@@ -8,6 +8,7 @@ using System;
 
 namespace Microsoft.eShopWeb.Web.Controllers.Api
 {
+    [Authorize(Roles = AuthorizationConstants.Roles.ADMINISTRATORS)]
     public class CatalogController : BaseApiController
     {
         private readonly ICatalogViewModelService _catalogViewModelService;
