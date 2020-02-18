@@ -1,10 +1,7 @@
 ﻿@page
-@using Microsoft.AspNetCore.Mvc.Localization
-
-@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] =  Localizer["title"];
+    ViewData["Title"] =  "Catalog";
     @model IndexModel
 }
 <section class="esh-catalog-hero">
@@ -18,21 +15,21 @@
     <div class="container">
         <form method="get">
             <a href="~/Admin/AddItem" class="btn btn-success">Add Item</a>
-              <label class="esh-catalog-label" data-title=@Localizer["viewType"]>
+              <label class="esh-catalog-label" data-title="View Type">
                 <select asp-for="@Model.CatalogModel.ResultView"
                 asp-items="@Model.CatalogModel.ResultViews" class="esh-catalog-filter"></select>
             </label>
           
-               <label class="esh-catalog-label" data-title=@Localizer["brand"]>
+               <label class="esh-catalog-label" data-title="brand">
                 <select asp-for="@Model.CatalogModel.BrandFilterApplied" asp-items="@Model.CatalogModel.Brands" class="esh-catalog-filter"></select>
             </label>
 
-                 <label class="esh-catalog-label" data-title=@Localizer["type"]>
+                 <label class="esh-catalog-label" data-title="type">
                 <select asp-for="@Model.CatalogModel.TypesFilterApplied" asp-items="@Model.CatalogModel.Types" class="esh-catalog-filter"></select>
             </label>
 
-             <label class="esh-catalog-label" data-title=@Localizer["search"]>
-                <input type="text" asp-for="@Model.CatalogModel.SearchFilter">
+             <label class="esh-catalog-label" data-title="search">
+                <input type="text" asp-for="@Model.CatalogModel.SearchText">
             </label>
                
            <input class="esh-catalog-send" type="image" src="~/images/arrow-right.svg" />
@@ -57,7 +54,7 @@
     else
     {
         <div class="esh-catalog-items row">
-              @Localizer["no results"]
+              THERE ARE NO RESULTS THAT MATCH YOUR SEARCH
         </div>
     }
 </div>

@@ -1,4 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model IEnumerable<StockPerStoreViewModel>
 
 
     @if(Model?.Any() == false) {

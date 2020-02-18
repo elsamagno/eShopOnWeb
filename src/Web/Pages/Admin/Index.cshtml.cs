@@ -19,7 +19,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
         private readonly ICatalogViewModelService _catalogViewModelService;
         private readonly IMemoryCache _cache;
 
-         public IndexModel(ICatalogViewModelService catalogViewModelService)
+         public IndexModel(ICatalogViewModelService catalogViewModelService, IMemoryCache cache)
         {
             _catalogViewModelService = catalogViewModelService;
             _cache = cache;

@@ -31,6 +31,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 
 using Newtonsoft.Json;
+using SendGrid;
 using Microsoft.AspNetCore.Mvc;
 
 [assembly : ApiConventionType(typeof(DefaultApiConventions))]
@@ -136,14 +137,27 @@ namespace Microsoft.eShopWeb.Web {
                 services.AddSingleton<ICurrencyService, CurrencyServiceStatic>();
             } else {
                 services.AddSingleton<ICurrencyService, CurrencyServiceExternal>();
-                 services.AddTransient<IEmailSender, EmailSender>();
             }
             
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
             services.AddCatalogServices(Configuration);
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
           
+            services.AddTransient<IEmailSender, EmailSender>();
 
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("emailsettings.json");
+            configurationBuilder.AddConfiguration(Configuration);
+            configurationBuilder.AddEnvironmentVariables();
+            var configuration = configurationBuilder.Build();
+            services.AddSingleton<IConfiguration>(configuration);
+
+            services.AddTransient<ISendGridClient>(provider => {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                var apiKey = configuration.GetValue<string>("SendGrid:apiKey");
+                var client = new SendGridClient(apiKey);
+                return client;
+            });
             // Add memory cache services
             services.AddMemoryCache();
 

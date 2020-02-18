@@ -15,13 +15,11 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
     public class EditCatalogItemModel : PageModel
     {
         private readonly ICatalogItemViewModelService _catalogItemViewModelService;
-        private readonly CatalogNotifications _catalogNotifications;
 
-          public EditCatalogItemModel(ICatalogItemViewModelService catalogItemViewModelService, CatalogNotifications catalogNotifications)
+          public EditCatalogItemModel(ICatalogItemViewModelService catalogItemViewModelService)
        
         {
             _catalogItemViewModelService = catalogItemViewModelService;
-            _catalogNotifications = catalogNotifications;
         }
 
         [BindProperty]
@@ -51,7 +49,6 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
             if (ModelState.IsValid)
             {
                 await _catalogItemViewModelService.UpdateCatalogItem(CatalogModel);
-                await _catalogNotifications.CatalogItemsNotificationAsync(CatalogModel.Id, CatalogModel.Price);
             }
 
             return RedirectToPage("/Admin/Index");
