@@ -10,11 +10,10 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
         private string searchText;
 
         [Theory]
-        [InlineData(0, Constants.ITEMS_PER_PAGE, null,null,null, "items-0-10---")]
-        [InlineData(5, 20, null,null,null, "items-5-20---")]
-        [InlineData(-5, 20, null,null,null,null, typeof(InvalidPageIndexException))] 
-        public void ReturnCatalogItemCacheKey(
-      
+         [InlineData(0, Constants.ITEMS_PER_PAGE, null, null, null, "en-US", "items-0-10---")]
+        [InlineData(5, 20, null, null, null, "pt-PT", "items-5-20---")]
+        [InlineData(-5, 20, null, null, null, "en-US", null, typeof(InvalidPageIndexException))]
+        public void ReturnCatalogItemCacheKey(int pageIndex, int itemPerPage, string searchText, int? brandId, int? typeId,  string cultureName, string expectedResult, Type exceptionType = null)
             int pageIndex,
             int itemPerPage,
             string searchText,
@@ -32,15 +31,12 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
           }
           Assert.Throws(
               exceptionType,
-              () => CacheHelpers.GenerateCatalogItemCacheKey(
-                  pageIndex, itemPerPage, searchText, brandId, typeId
-              ));
+             () => CacheHelpers.GenerateCatalogItemCacheKey(pageIndex, itemPerPage, searchText, brandId, typeId, cultureName));
       } 
       else 
       {
               
-            var result = CacheHelpers.GenerateCatalogItemCacheKey(
-                pageIndex, itemPerPage, searchText, brandId, typeId);
+             var result = CacheHelpers.GenerateCatalogItemCacheKey(pageIndex, itemPerPage, searchText, brandId, typeId, cultureName);
 
             Assert.Equal(expectedResult, result);
         }

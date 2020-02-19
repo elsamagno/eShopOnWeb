@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using System.Threading;
@@ -34,8 +35,8 @@ namespace Microsoft.eShopWeb.Web.Services
 
         private readonly CatalogContext _catalogContext;
         private int pageItemsOffset;
-        private const Currency DEFAULT_PRICE_UNIT = Currency.USD; // TODO: Get from Configuration
-        private const Currency USER_PRICE_UNIT = Currency.EUR; // TODO: Get from IUserCurrencyService    
+        private const Currency DEFAULT_PRICE_UNIT = Currency.USD;
+        private Currency userPriceUnit;  
         public CatalogViewModelService(
             ILoggerFactory loggerFactory,
             IAsyncRepository<CatalogItem> itemRepository,
@@ -62,24 +63,31 @@ namespace Microsoft.eShopWeb.Web.Services
         /// <param name="catalogItem">Catalog item</param>
         /// <returns>CatalogItemViewModel</returns>
 
-        private async Task<CatalogItemViewModel> CreateCatalogItemViewModelAsync(
-           
-                  CatalogItem catalogItem,
-                  bool convertPrice = true,
-                  CancellationToken cancellationToken = default(CancellationToken)) {
+          private async Task<CatalogItemViewModel> CreateCatalogItemViewModel(CatalogItem catalogItem, bool convertPrice = true,CancellationToken cancellationToken = default(CancellationToken)) {
+                 
+                  Enum.TryParse(new RegionInfo(CultureInfo.CurrentCulture.Name).ISOCurrencySymbol, true, out userPriceUnit);
+ 
+                 
                   return new CatalogItemViewModel()
                 {
                     Id = catalogItem.Id,
                     Name = catalogItem.Name,
                     PictureUri = catalogItem.PictureUri,
-                     Price = await (convertPrice
-                        ? _currencyService.Convert(catalogItem.Price, DEFAULT_PRICE_UNIT, USER_PRICE_UNIT, cancellationToken)
-                        : Task.FromResult(catalogItem.Price)),
+                    Price = await (convertPrice ? _currencyService.Convert(catalogItem.Price, DEFAULT_PRICE_UNIT, userPriceUnit, cancellationToken) : Task.FromResult(catalogItem.Price)),
+                    ShowPrice = catalogItem.ShowPrice,
+                    CatalogBrandId = catalogItem.CatalogBrandId,
+                    CatalogTypeId = catalogItem.CatalogTypeId,
+                    PriceUnit = USER_PRICE_UNIT
+                    PriceUnit = userPriceUnit
+            };
+        }
+
+
                     ShowPrice = catalogItem.ShowPrice,
                     CatalogBrandId = catalogItem.CatalogBrandId,
                     CatalogTypeId = catalogItem.CatalogTypeId,
                  
-                    PriceUnit  = USER_PRICE_UNIT
+                      PriceUnit = userPriceUnit
                 };
         }
 

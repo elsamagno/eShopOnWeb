@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Microsoft.eShopWeb.Web.Extensions
 {
@@ -9,18 +10,17 @@ namespace Microsoft.eShopWeb.Web.Extensions
     public static class CacheHelpers
     {
         public static readonly TimeSpan DefaultCacheDuration = TimeSpan.FromSeconds(30);
-        private static readonly string _itemsKeyTemplate = "items-{0}-{1}-{2}-{3}-{4}";
+        private static readonly string _itemsKeyTemplate = "items-{0}-{1}-{2}-{3}-{4}-{5}";
 //"items-0-10---"
 //0,10,null,null,null
-        public static string GenerateCatalogItemCacheKey(
-            int pageIndex, int itemsPage,
-            string searchText, int? brandId, int? typeId)
+       public static string GenerateCatalogItemCacheKey(int pageIndex, int itemsPage, string searchText, int? brandId, int? typeId, string cultureName)
         {
             if (pageIndex < 0) {
                 throw new InvalidPageIndexException();
             }
-            return string.Format(
-                _itemsKeyTemplate, pageIndex, itemsPage, brandId, typeId, searchText ?? string.Empty // TODO: Handle invalid special chars in cache keys?
+             string _searchText = string.IsNullOrEmpty(searchText)?"":searchText.Replace(" ", ""); // TODO: Handle invalid special chars in cache keys?
+            return string.Format(_itemsKeyTemplate, pageIndex, itemsPage, _searchText, brandId, typeId, cultureName);
+        }
             );
         }
 

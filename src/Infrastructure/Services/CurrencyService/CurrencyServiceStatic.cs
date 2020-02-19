@@ -9,7 +9,13 @@ namespace Infrastructure.Services.CurrencyService
         /// <inheritdoc />
         public Task<decimal> Convert(decimal value, Currency source, Currency target, CancellationToken cancellationToken = default)
         {
-            var convertedValue = value * 1.25m; // TODO: Apply conversion
+             decimal rate = 1m;
+
+            if(target == Currency.EUR) {
+                rate = 1.05m;
+            }
+
+            var convertedValue = valor * rate;
             return Task.FromResult(convertedValue);
         }
     }
