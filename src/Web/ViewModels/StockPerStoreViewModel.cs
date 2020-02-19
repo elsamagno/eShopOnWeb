@@ -1,4 +1,4 @@
-using System;
+
 namespace Microsoft.eShopWeb.Web.ViewModels
 {
     public class StockPerStoreViewModel
