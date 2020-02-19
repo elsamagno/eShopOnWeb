@@ -1,20 +1,20 @@
 ﻿@page
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @model LoginModel
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Log in";
 }
 
 
-
-
-
 <div class="container account-login-container">
     <h2>@ViewData["Title"]</h2>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-4">
             <section>
-                <form method="post">
+                <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
@@ -55,8 +55,28 @@
                     <p>
                         Password: <b>Pass@word1</b>
                     </p>
+                    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" data-prompt="select_account"></div>
                 </form>
             </section>
+        </div>
+        <div class="col-md-6 col-md-offset-2">
+            @if (Model.ExternalLogins?.Count > 0)
+            {
+                <section>
+                    <h4>Use another service to log in.</h4>
+                    <hr />
+                    <form method="post" asp-route-returnurl="@ViewData["ReturnUrl"]" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins)
+                                {
+                                    <button type="submit" class="btn btn-default" asp-action="LinkLogin" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                </section>
+            }
         </div>
     </div>
 </div>
@@ -64,3 +84,19 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+@{
+    var googleAuthNSection = Configuration.GetSection("Authentication:Google");
+    var ClientId = googleAuthNSection["ClientId"];
+}
+<meta name="google-signin-scope" content="profile email">
+<meta name="google-signin-client_id" content="@ClientId">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script>
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+        });
+    }
+</script>

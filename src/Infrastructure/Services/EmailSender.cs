@@ -1,13 +1,14 @@
 ﻿using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
-
-using Microsoft.Extensions.Configuration;
-using SendGrid;
 using System.Net;
+using System.Threading.Tasks;
+using SendGrid.Helpers.Mail;
 
-using Microsoft.Extensions.Logging;
 
 namespace Microsoft.eShopWeb.Infrastructure.Services
 {
@@ -18,30 +19,37 @@ namespace Microsoft.eShopWeb.Infrastructure.Services
         private readonly ILogger<EmailSender> _logger;
         private readonly IConfiguration _configuration;
         private readonly ISendGridClient _sendGridClient;
+        private readonly IServiceProvider _serviceProvider;
 
-        public EmailSender(ILoggerFactory loggerFactory, ISendGridClient sendGridClient, IConfiguration configuration)
-        {
-            _logger = loggerFactory.CreateLogger<EmailSender>();
+       public EmailSender(IConfiguration configuration,
+           ISendGridClient sendGridClient, ILoggerFactory logger){
+            _configuration  = configuration;
             _sendGridClient = sendGridClient;
-            _configuration = configuration;
+            _serviceProvider = serviceProvider;
+            _logger = logger.CreateLogger<EmailSender>();
         }
 
+        public async Task SendEmailAsync(string email, string subject, string message)
+      
         public async Task SendEmailAsync(string email, string subject, string message)
         {
             var apiKey = _configuration.GetValue<string>("SendGrid:apiKey");
             var from = new EmailAddress(_configuration.GetValue<string>("SendGrid:from"));
-            var to   = new EmailAddress(email);
-            string plainTextContent = string.Empty;
 
-            SendGridMessage msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, message);
+            var to   = new EmailAddress(email);
+            var plainTextContent = string.Empty;
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, message);
 
             var client = new SendGridClient(apiKey);
             var response = await client.SendEmailAsync(msg);
 
-            if(response.StatusCode == HttpStatusCode.Accepted) {
-                  _logger.LogInformation($"E-mail sended to {email}.");
-            } else {
-                _logger.LogError($"ERROR Sending email to {email}. {response.ToString()}");
+            if(response.StatusCode == HttpStatusCode.Accepted){
+                  _logger.LogInformation($"Send e-mail to {email} is confirmed.");
+            }
+
+            else
+            {
+                 _logger.LogError($"ERROR Sending email to {email} {response.ToString()}");
                 throw new Exception(response.ToString());
             }
         }

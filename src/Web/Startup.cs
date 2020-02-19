@@ -143,6 +143,13 @@ namespace Microsoft.eShopWeb.Web {
             services.AddCatalogServices(Configuration);
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
           
+            services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+            });
+
+
             services.AddTransient<IEmailSender, EmailSender>();
 
             var configurationBuilder = new ConfigurationBuilder();
