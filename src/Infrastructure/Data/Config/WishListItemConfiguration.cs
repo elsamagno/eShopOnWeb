@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.eShopWeb.ApplicationCore.Entities.WishlistAggregate;
+using Microsoft.eShopWeb.ApplicationCore.Entities.WishListAggregate;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Config
 {
-    public class WishlistItemConfiguration : IEntityTypeConfiguration<WishlistItem>
+    public class WishlistItemConfiguration : IEntityTypeConfiguration<WishListItem>
     {
-        public void Configure(EntityTypeBuilder<WishlistItem> builder)
+        public void Configure(EntityTypeBuilder<WishListItem> builder)
         {
             builder.Property(bi => bi.UnitPrice)
                 .IsRequired(true)

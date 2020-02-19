@@ -41,9 +41,12 @@
     } else {
            <span class="item-price">@Localizer["On Request"]</span>
     }
+</form>
     
  <form asp-page="/WishList/Index" method="post">
-    <input type="image" src="~/images/WishList2.jpg" style="width:34px;position:relative;top:-34px;right:-142px;"/>
+    @if(User.Identity.IsAuthenticated) {
+        <input type="image" src="~/images/WishList2.jpg" style="width:34px;position:relative;top:-34px;right:-142px;"/>
+    }
 
     <input type="hidden" asp-for="@Model.Id" name="id" />
     <input type="hidden" asp-for="@Model.Name" name="name" />

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.eShopWeb.Web.ViewModels;
 
-
-using System;
+using Microsoft.eShopWeb.ApplicationCore.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Microsoft.eShopWeb.Web.Controllers.Api
 {

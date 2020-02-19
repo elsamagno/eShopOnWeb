@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.eShopWeb.ApplicationCore.Constants;
 
 namespace Microsoft.eShopWeb.Web.Controllers.Api
 {
