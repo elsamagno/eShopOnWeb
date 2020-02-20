@@ -176,6 +176,7 @@ namespace Microsoft.eShopWeb.Web {
 
                services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
 
+             services.AddApplicationInsightsTelemetry();
              services.AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, options => {
                     options.ResourcesPath = "Resources";
