@@ -22,6 +22,7 @@ namespace Microsoft.eShopWeb.ApplicationCore.Services
 
         public async Task AddItemToWishList(int wishlistId, int catalogItemId)
         {
+            _logger.LogInformation("AddItemTiWishList called");
             var wishlist = await _wishlistRepository.GetByIdAsync(wishlistId);
 
             wishlist.AddItem(catalogItemId);
@@ -31,6 +32,7 @@ namespace Microsoft.eShopWeb.ApplicationCore.Services
 
         public async Task DeleteItemFromWishList(int wishlistId, int catalogItemId)
         {
+            _logger.LogInformation("DeleteItemTiWishList called");
             var wishlist = await _wishlistRepository.GetByIdAsync(wishlistId);
             wishlist.DeleteItem(catalogItemId);
             await _wishlistRepository.UpdateAsync(wishlist);
