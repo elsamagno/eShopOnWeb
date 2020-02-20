@@ -23,9 +23,17 @@
                         <div class="esh-identity-name esh-identity-name--upper">My orders</div>
                     </a>
                     <a class="esh-identity-item"
-                    asp-page="Admin/Orders">
+                    asp-page="/Admin/Orders/Index">
                         <div class="esh-identity-name esh-identity-name--upper">All orders</div>
                     </a>
+                    }
+                       @if (!User.IsInRole("Administrators"))
+                    {
+                        <a class="esh-identity-item"
+                        asp-controller="Order"
+                        asp-action="MyOrders">
+                            <div class="esh-identity-name esh-identity-name--upper">My orders</div>
+                        </a>
                     }
                     <a class="esh-identity-item"
                        asp-controller="Manage"
