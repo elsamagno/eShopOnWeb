@@ -1,14 +1,11 @@
 ﻿using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using SendGrid.Helpers.Mail;
-
 
 namespace Microsoft.eShopWeb.Infrastructure.Services
 {
@@ -21,8 +18,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Services
         private readonly ISendGridClient _sendGridClient;
         private readonly IServiceProvider _serviceProvider;
 
-       public EmailSender(IConfiguration configuration,
-           ISendGridClient sendGridClient, ILoggerFactory logger){
+       public EmailSender(IConfiguration configuration, IServiceProvider serviceProvider, ISendGridClient sendGridClient, ILoggerFactory logger){
             _configuration  = configuration;
             _sendGridClient = sendGridClient;
             _serviceProvider = serviceProvider;
@@ -32,7 +28,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Services
         public async Task SendEmailAsync(string email, string subject, string message)
   
       
-        public async Task SendEmailAsync(string email, string subject, string message)
         {     
              _logger.LogInformation("SendEmail called.");
 

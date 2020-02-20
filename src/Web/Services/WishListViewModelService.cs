@@ -4,7 +4,6 @@ using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.Web.Interfaces;
 using Microsoft.eShopWeb.Web.Pages.WishList;
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,19 +46,6 @@ namespace Microsoft.eShopWeb.Web.Services
             return viewModel;
         }
 
-        private async Task<WishListViewModel> CreateWishListForUser(string userId)
-        {
-            var wishlist = new WishList() { BuyerId = userId };
-            await _wishlistRepository.AddAsync(wishlist);
-
-            return new WishListViewModel()
-            {
-                BuyerId = wishlist.BuyerId,
-                Id = wishlist.Id,
-                Items = new List<WishListItemViewModel>()
-            };
-        }
-
         private async Task<List<WishListItemViewModel>> GetWishListItems(IReadOnlyCollection<WishListItem> wishlistItems)
         {
             var items = new List<WishListItemViewModel>();
@@ -71,12 +57,30 @@ namespace Microsoft.eShopWeb.Web.Services
                     CatalogItemId = item.CatalogItemId
                 };
                 var catalogItem = await _itemRepository.GetByIdAsync(item.CatalogItemId);
-                itemModel.PictureUrl = _uriComposer.ComposePicUri(catalogItem.PictureUri);
+               
+                // if(!string.IsNullOrEmpty(catalogItem.PictureUri))
+                // {
+                    itemModel.PictureUrl = _uriComposer.ComposePicUri(catalogItem.PictureUri);
+                // }
+
                 itemModel.ProductName = catalogItem.Name;
+                itemModel.Price = catalogItem.Price;
                 items.Add(itemModel);
             }
 
             return items;
+        }
+          private async Task<WishListViewModel> CreateWishListForUser(string userName)
+        {
+            var wishlist = new WishList() { BuyerId = userName };
+            await _wishlistRepository.AddAsync(wishlist);
+
+            return new WishListViewModel()
+            {
+                BuyerId = wishlist.BuyerId,
+                Id = wishlist.Id,
+                Items = new List<WishListItemViewModel>()
+            };
         }
     }
 }

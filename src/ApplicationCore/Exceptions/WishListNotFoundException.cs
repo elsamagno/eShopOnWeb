@@ -1,15 +1,20 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Exceptions
 {
-    public class WishListNotFoundException : Exception
+     [Serializable]
+    internal class WishListNotFoundException : Exception
     {
-        public WishListNotFoundException(int wishlistId) : base($"No wishlist found with id {wishlistId}")
+        private int wishlistId;
+
+        public WishListNotFoundException()
         {
         }
 
-        protected WishListNotFoundException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
+        public WishListNotFoundException(int wishlistId)
         {
+            this.wishlistId = wishlistId;
         }
 
         public WishListNotFoundException(string message) : base(message)
@@ -19,5 +24,10 @@ namespace Microsoft.eShopWeb.ApplicationCore.Exceptions
         public WishListNotFoundException(string message, Exception innerException) : base(message, innerException)
         {
         }
+         protected WishListNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
-}
+} 
+
+ 

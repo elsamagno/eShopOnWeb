@@ -21,5 +21,13 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.WishListAggregate
                 return;
             }
         }
+            public void DeleteItem(int catalogItemId)
+        {
+            var itemToDelete = _items.SingleOrDefault(i => i.CatalogItemId == catalogItemId);
+            if(itemToDelete != null) {
+                 _items.Remove(itemToDelete);
+            }
+
+        }
     }
 }

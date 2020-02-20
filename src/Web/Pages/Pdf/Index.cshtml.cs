@@ -27,7 +27,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Pdf
         public async Task OnGet(CatalogIndexViewModel catalogModel, int? pageId) {
             CatalogModel = await _catalogViewModelService.GetCatalogItems(
                  pageId ?? 0, 1000,
-                 catalogModel.SearchFilter, 
+                 catalogModel.SearchText, 
                  catalogModel.BrandFilterApplied, catalogModel.TypesFilterApplied, 
                  convertPrice: true,
                  HttpContext.RequestAborted);

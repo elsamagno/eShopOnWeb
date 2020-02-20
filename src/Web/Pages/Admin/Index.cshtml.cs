@@ -31,7 +31,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
 
          public async Task OnGet(CatalogIndexViewModel catalogModel, int? pageId, bool convertPrice = true)
         {
-            var cacheKey = CacheHelpers.GenerateCatalogItemCacheKey(pageId.GetValueOrDefault(), Constants.ITEMS_PER_PAGE, catalogModel.SearchFilter, catalogModel.BrandFilterApplied, catalogModel.TypesFilterApplied, CultureInfo.CurrentCulture.Name);
+            var cacheKey = CacheHelpers.GenerateCatalogItemCacheKey(pageId.GetValueOrDefault(), Constants.ITEMS_PER_PAGE, catalogModel.SearchText, catalogModel.BrandFilterApplied, catalogModel.TypesFilterApplied, CultureInfo.CurrentCulture.Name);
 
             _cache.Remove(cacheKey);
 

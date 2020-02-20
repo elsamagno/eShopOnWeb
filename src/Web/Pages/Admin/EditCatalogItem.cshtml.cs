@@ -31,7 +31,6 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin
        
         {
             CatalogModel = catalogModel;
-            return Task.CompletedTask;
             CatalogModel.Brands = await _catalogViewModelService.GetBrands();
             CatalogModel.Types = await _catalogViewModelService.GetTypes();
         }

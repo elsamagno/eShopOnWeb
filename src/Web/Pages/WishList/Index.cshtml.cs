@@ -50,12 +50,18 @@ namespace Microsoft.eShopWeb.Web.Pages.WishList
             return RedirectToPage();
         }
 
-        public async Task OnPostUpdate(Dictionary<string, int> items)
+         public async Task<IActionResult> OnPostDelete(int catalogItemId)
         {
             await SetWishListModelAsync();
 
+            await _wishlistService.DeleteItemFromWishList(WishListModel.Id, catalogItemId);
+
             await SetWishListModelAsync();
+
+            return RedirectToPage();
+
         }
+
 
         private async Task SetWishListModelAsync()
         {

@@ -10,19 +10,10 @@ namespace Microsoft.eShopWeb.UnitTests.Web.Extensions.CacheHelpersTests
         private string searchText;
 
         [Theory]
-         [InlineData(0, Constants.ITEMS_PER_PAGE, null, null, null, "en-US", "items-0-10---")]
-        [InlineData(5, 20, null, null, null, "pt-PT", "items-5-20---")]
+         [InlineData(0, Constants.ITEMS_PER_PAGE, null, null, null, "en-US", "items-0-10----en-US")]
+        [InlineData(5, 20, null, null, null, "pt-PT", "items-5-20----pt-PT")]
         [InlineData(-5, 20, null, null, null, "en-US", null, typeof(InvalidPageIndexException))]
         public void ReturnCatalogItemCacheKey(int pageIndex, int itemPerPage, string searchText, int? brandId, int? typeId,  string cultureName, string expectedResult, Type exceptionType = null)
-            int pageIndex,
-            int itemPerPage,
-            string searchText,
-            int? brandId,
-            int? typeId,
-            string expectedResult,
-            Type exceptionType= null
-            )  
-
   {
 
       if(string.IsNullOrEmpty(expectedResult)){

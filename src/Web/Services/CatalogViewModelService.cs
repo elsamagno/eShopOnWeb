@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
@@ -11,11 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Microsoft.eShopWeb.Web.Services
 {
@@ -31,12 +30,13 @@ namespace Microsoft.eShopWeb.Web.Services
         private readonly IAsyncRepository<CatalogType> _typeRepository;
         private readonly IUriComposer _uriComposer;
         private readonly ICurrencyService _currencyService;
+        private readonly CatalogContext _catalogContext;
         private readonly IConfiguration  _configuration;
 
-        private readonly CatalogContext _catalogContext;
-        private int pageItemsOffset;
         private const Currency DEFAULT_PRICE_UNIT = Currency.USD;
-        private Currency userPriceUnit;  
+
+        private Currency userPriceUnit;
+
         public CatalogViewModelService(
             ILoggerFactory loggerFactory,
             IAsyncRepository<CatalogItem> itemRepository,
@@ -54,112 +54,100 @@ namespace Microsoft.eShopWeb.Web.Services
             _uriComposer = uriComposer;
             _currencyService = currencyService;
             _catalogContext = catalogContext;
-             _configuration = configuration;
+            _configuration = configuration;
         }
 
         /// <summary>
         /// Create a catalog item view model from a catalog item data model
         /// </summary>
         /// <param name="catalogItem">Catalog item</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
         /// <returns>CatalogItemViewModel</returns>
+        private async Task<CatalogItemViewModel> CreateCatalogItemViewModel(CatalogItem catalogItem, bool convertPrice = true,CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Enum.TryParse(new RegionInfo(CultureInfo.CurrentCulture.Name).ISOCurrencySymbol, true, out userPriceUnit);
 
-          private async Task<CatalogItemViewModel> CreateCatalogItemViewModel(CatalogItem catalogItem, bool convertPrice = true,CancellationToken cancellationToken = default(CancellationToken)) {
-                 
-                  Enum.TryParse(new RegionInfo(CultureInfo.CurrentCulture.Name).ISOCurrencySymbol, true, out userPriceUnit);
- 
-                 
-                  return new CatalogItemViewModel()
-                {
-                    Id = catalogItem.Id,
-                    Name = catalogItem.Name,
-                    PictureUri = catalogItem.PictureUri,
-                    Price = await (convertPrice ? _currencyService.Convert(catalogItem.Price, DEFAULT_PRICE_UNIT, userPriceUnit, cancellationToken) : Task.FromResult(catalogItem.Price)),
-                    ShowPrice = catalogItem.ShowPrice,
-                    CatalogBrandId = catalogItem.CatalogBrandId,
-                    CatalogTypeId = catalogItem.CatalogTypeId,
-                    PriceUnit = USER_PRICE_UNIT
-                    PriceUnit = userPriceUnit
+            return new CatalogItemViewModel()
+            {
+                Id = catalogItem.Id,
+                Name = catalogItem.Name,
+                PictureUri = catalogItem.PictureUri,
+                Price = await (convertPrice ? _currencyService.Convert(catalogItem.Price, DEFAULT_PRICE_UNIT, userPriceUnit, cancellationToken) : Task.FromResult(catalogItem.Price)),
+                ShowPrice = catalogItem.ShowPrice,
+                CatalogBrandId = catalogItem.CatalogBrandId,
+                CatalogTypeId = catalogItem.CatalogTypeId,
+                PriceUnit = userPriceUnit
             };
         }
 
 
-                    ShowPrice = catalogItem.ShowPrice,
-                    CatalogBrandId = catalogItem.CatalogBrandId,
-                    CatalogTypeId = catalogItem.CatalogTypeId,
-                 
-                      PriceUnit = userPriceUnit
-                };
-        }
-
-        private async Task<IReadOnlyList<CatalogItem>> ListCatalogItems(
-            int pageItemOffset, int itemsPage, int? brandId, int? typeId){
+        private async Task<IReadOnlyList<CatalogItem>> ListCatalogItem(int pageItemsOffset, int itemsPage, int? brandId, int? typeId)
+        {
             var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
-            var whereExpr = new List<Expression<Func<CatalogItem, bool>>>();
-            if(brandId.HasValue){
-               // query = query.Where(x=> x.CatalogBrandId == brandId.Value);
-                whereExpr.Add(x => x.CatalogBrandId == brandId.Value);
+            var whereExp = new List<Expression<Func<CatalogItem, bool>>>();
+            if (brandId.HasValue && typeId.HasValue)
+            {
+                // query = query.Where(x => x.CatalogBrandId == brandId.Value && x.CatalogTypeId == typeId.Value);
+                whereExp.Add(x => x.CatalogBrandId == brandId.Value && x.CatalogTypeId == typeId);
             }
-            if(typeId.HasValue){
-                // query = query.Where(x=> x.CatalogTypeId == typeId.Value);
-                whereExpr.Add(x => x.CatalogTypeId
-                == typeId.Value);
+            else if (brandId.HasValue)
+            {
+                //query = query.Where(x => x.CatalogBrandId == brandId.Value);
+                whereExp.Add(x => x.CatalogBrandId == brandId.Value);
             }
-            whereExpr.ForEach(expr => query.Where(expr));
-            query = query.Skip(pageItemsOffset).Take(itemsPage);
+            else if (typeId.HasValue)
+            {
+                // query = query.Where(x => x.CatalogTypeId == typeId.Value);
+                whereExp.Add(x => x.CatalogTypeId == typeId.Value);
+            }
+            whereExp.ForEach(expr => query.Where(expr));
+            query.Skip(pageItemsOffset).Take(itemsPage);
             return await query.ToListAsync();
         }
 
-        private Task <int> CountCatalogItems(
-             int? brandId, int? typeId
-             ) {
-                 var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
-                 query.Where(catalogItem => (!brandId.HasValue || catalogItem.CatalogBrandId == brandId) &&
-                (!typeId.HasValue || catalogItem.CatalogTypeId == typeId));
+        private Task<int> CountCatalogItems(int? brandId, int? typeId)
+        {
+            var query = _catalogContext.CatalogItems as IQueryable<CatalogItem>;
+            query.Where(catalogItem => (!brandId.HasValue || catalogItem.CatalogBrandId == brandId) && (!typeId.HasValue || catalogItem.CatalogTypeId == typeId));
+
             return query.CountAsync();
+
         }
-        
 
-
-        public async Task<CatalogIndexViewModel> GetCatalogItems(
-            int pageIndex, int itemsPage, 
-            string searchText, 
-            int? brandId, int? typeId,
-            bool convertPrice = true,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<CatalogIndexViewModel> GetCatalogItems(int pageIndex, int itemsPage, string searchText, int? brandId, int? typeId, bool convertPrice = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             _logger.LogInformation("GetCatalogItems called.");
 
             var pageItemsOffset = itemsPage * pageIndex;
             var filterSpecification = new CatalogFilterSpecification(searchText, brandId, typeId);
-            var filterPaginatedSpecification =
-             new CatalogFilterPaginatedSpecification( pageItemsOffset, itemsPage, searchText, brandId, typeId);
+            var filterPaginatedSpecification = new CatalogFilterPaginatedSpecification(pageItemsOffset, itemsPage, searchText, brandId, typeId);
 
             // the implementation below using ForEach and Count. We need a List.
-             var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
-             var totalItems = await _itemRepository.CountAsync(filterSpecification);
+            var itemsOnPage = await _itemRepository.ListAsync(filterPaginatedSpecification);
+            var totalItems = await _itemRepository.CountAsync(filterSpecification);
 
-           // var itemsOnPage = await ListCatalogItems(itemsPage * pageIndex, itemsPage, brandId, typeId);
-            //var totalItems = await CountCatalogItems(brandId, typeId);
+            // var itemsOnPage = await ListCatalogItem(pageItemsOffset, itemsPage, brandId, typeId);
+            // var totalItems = await CountCatalogItems(brandId, typeId);
 
-        
-        foreach (var itemOnPage in itemsOnPage)
+            foreach (var itemOnPage in itemsOnPage)
             {
-                 if(!string.IsNullOrEmpty(itemOnPage.PictureUri))
+                if(!string.IsNullOrEmpty(itemOnPage.PictureUri))
                 {
                     itemOnPage.PictureUri = _uriComposer.ComposePicUri(itemOnPage.PictureUri);
                 }
-            
+            }
 
-            var CatalogItemsTask = Task.WhenAll(itemsOnPage.Select(
-                catalogItem => CreateCatalogItemViewModelAsync(catalogItem,  convertPrice, cancellationToken)));
+            var CatalogItemsTask = Task.WhenAll(itemsOnPage.Select(catalogItem => CreateCatalogItemViewModel(catalogItem, convertPrice, cancellationToken)));
             cancellationToken.ThrowIfCancellationRequested();
+
             var vm = new CatalogIndexViewModel()
             {
-                CatalogItems = await CatalogItemsTask, // catalogItemsList,
-                Brands = await GetBrands(),
-                Types = await GetTypes(),
+                CatalogItems = await CatalogItemsTask,
+                Brands = await GetBrands(cancellationToken),
+                Types = await GetTypes(cancellationToken),
                 BrandFilterApplied = brandId ?? 0,
                 TypesFilterApplied = typeId ?? 0,
+                SearchText = searchText ?? null,
                 PaginationInfo = new PaginationInfoViewModel()
                 {
                     ActualPage = pageIndex,
@@ -195,9 +183,9 @@ namespace Microsoft.eShopWeb.Web.Services
         public async Task<IEnumerable<SelectListItem>> GetTypes(CancellationToken cancellationToken = default(CancellationToken))
         {
             _logger.LogInformation("GetTypes called.");
-            //var types = await _typeRepository.ListAllAsync();
-            // var types = await _catalogContext.Set<CatalogType>().ToListAsync();
-            var types = await _catalogContext.CatalogTypes.ToListAsync();
+
+            // var types = await _catalogContext.CatalogItems.ToListAsync();
+            var types = await _typeRepository.ListAllAsync();
             var items = new List<SelectListItem>
             {
                 new SelectListItem() { Value = null, Text = "All", Selected = true }
@@ -209,28 +197,44 @@ namespace Microsoft.eShopWeb.Web.Services
 
             return items;
         }
-          public async Task<CatalogItemViewModel> GetItemById(int id, bool convertPrice = true, CancellationToken cancellationToken = default)
+
+        public async Task<CatalogItemViewModel> GetItemById(int id, bool convertPrice = true, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("GetItemById called.");
-            try {
+            try
+            {
                 var item = await _itemRepository.GetByIdAsync(id);
-                if (item == null) {
+                if (item == null)
+                {
                     throw new ModelNotFoundException($"Catalog item not found. id={id}");
                 }
-                CatalogItemViewModel catalogItemViewModel1 = await CreateCatalogItemViewModelAsync(
-                    item, convertPrice, cancellationToken);
-                var catalogItemViewModel = catalogItemViewModel1;
+                var catalogItemViewModel = await CreateCatalogItemViewModel(item, convertPrice, cancellationToken);
                 return catalogItemViewModel;
-            } catch (Exception ex) {
-                string message = $"Catalog item not found.id={id}";
-                throw new ModelNotFoundException(message,ex);
+            }
+            catch (Exception ex)
+            {
+                throw new ModelNotFoundException($"Catalog item not found. id={id}", ex);
             }
         }
-       
+    }
 
-        public Task<CatalogIndexViewModel> GetCatalogItems(int v1, int iTEMS_PER_PAGE, string v2, int? brandFilterApplied, int? typesFilterApplied, CancellationToken requestAborted)
+    [Serializable]
+    internal class ModelNotFoundException : Exception
+    {
+        public ModelNotFoundException()
         {
-            throw new NotImplementedException();
+        }
+
+        public ModelNotFoundException(string message) : base(message)
+        {
+        }
+
+        public ModelNotFoundException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected ModelNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

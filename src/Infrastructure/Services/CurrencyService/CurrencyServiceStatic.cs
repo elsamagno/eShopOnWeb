@@ -15,7 +15,7 @@ namespace Infrastructure.Services.CurrencyService
                 rate = 1.05m;
             }
 
-            var convertedValue = valor * rate;
+            var convertedValue = value * rate;
             return Task.FromResult(convertedValue);
         }
     }

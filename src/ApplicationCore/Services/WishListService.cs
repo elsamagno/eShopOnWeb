@@ -29,36 +29,12 @@ namespace Microsoft.eShopWeb.ApplicationCore.Services
             await _wishlistRepository.UpdateAsync(wishlist);
         }
 
-        public async Task DeleteWishListAsync(int wishlistId)
+        public async Task DeleteItemFromWishList(int wishlistId, int catalogItemId)
         {
             var wishlist = await _wishlistRepository.GetByIdAsync(wishlistId);
-            await _wishlistRepository.DeleteAsync(wishlist);
-        }
-
-        public async Task<int> GetWishListItemCountAsync(string userName)
-        {
-            Guard.Against.NullOrEmpty(userName, nameof(userName));
-            var wishlistSpec = new WishListWithItemsSpecification(userName);
-            var wishlist = (await _wishlistRepository.ListAsync(wishlistSpec)).FirstOrDefault();
-            if (wishlist == null)
-            {
-                _logger.LogInformation($"No wishlist found for {userName}");
-                return 0;
-            }
-            int count = wishlist.Items.Sum(i => i.Quantity);
-            _logger.LogInformation($" WishList for {userName} has {count} items.");
-            return count;
-        }
-
-        public async Task TransferWishListAsync(string anonymousId, string userName)
-        {
-            Guard.Against.NullOrEmpty(anonymousId, nameof(anonymousId));
-            Guard.Against.NullOrEmpty(userName, nameof(userName));
-            var wishlistSpec = new WishListWithItemsSpecification(anonymousId);
-            var wishlist = (await _wishlistRepository.ListAsync(wishlistSpec)).FirstOrDefault();
-            if (wishlist == null) return;
-            wishlist.BuyerId = userName;
+            wishlist.DeleteItem(catalogItemId);
             await _wishlistRepository.UpdateAsync(wishlist);
         }
+
     }
 }

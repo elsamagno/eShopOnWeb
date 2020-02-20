@@ -21,8 +21,6 @@ namespace Microsoft.eShopWeb.Web.Extensions
              string _searchText = string.IsNullOrEmpty(searchText)?"":searchText.Replace(" ", ""); // TODO: Handle invalid special chars in cache keys?
             return string.Format(_itemsKeyTemplate, pageIndex, itemsPage, _searchText, brandId, typeId, cultureName);
         }
-            );
-        }
 
         public static object GenerateCatalogItemCacheKey(int pageIndex, int iTEMS_PER_PAGE, object searchText, int? brandId, int? typeId)
         {

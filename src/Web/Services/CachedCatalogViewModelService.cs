@@ -43,7 +43,7 @@ namespace Microsoft.eShopWeb.Web.Services
             return await _cache.GetOrCreateAsync(cacheKey, async entry =>
             {
                 entry.SlidingExpiration = CacheHelpers.DefaultCacheDuration;
-                return await _catalogViewModelService.GetCatalogItems(
+                return await ((ICatalogViewModelService)_catalogViewModelService).GetCatalogItems(
                     pageIndex, itemsPage, searchText, brandId, typeId, convertPrice, cancellationToken);
             });
         }
