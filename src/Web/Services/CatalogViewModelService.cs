@@ -132,7 +132,7 @@ namespace Microsoft.eShopWeb.Web.Services
             foreach (var itemOnPage in itemsOnPage)
             {
                
-            temOnPage.PictureUri = _uriComposer.ComposePicUri(itemOnPage.PictureUri);
+            itemOnPage.PictureUri = _uriComposer.ComposePicUri(itemOnPage.PictureUri);
                
             }
 

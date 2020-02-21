@@ -15,7 +15,8 @@ using Microsoft.eShopWeb.Web.Features.AllOrders;
 using Microsoft.eShopWeb.Web.ViewModels;
 using Microsoft.Extensions.Logging;
 
-@@ -14,18 +20,39 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin.Orders
+namespace Microsoft.eShopWeb.Web.Pages.Admin.Orders
+{
     public class IndexModel : PageModel
     {
         private readonly IMediator _mediator;
@@ -40,7 +41,7 @@ using Microsoft.Extensions.Logging;
             DateTimeOffset? createdBefore = null,
             DateTimeOffset? createdAfterB = null)
         {
-            OrderViewModel = await _mediator.Send(new GetAllOrders());
+            OrderViewModel = await _mediator.Send(new GetAdminOrders());
             Orders = await _mediator.Send(new GetAdminOrders());
               OrderStatusList = Enum<OrderStatus>.GetAll()
                 .Select(orderStatus => new SelectListItem { Value = orderStatus.ToString(), Text = orderStatus.ToString() });

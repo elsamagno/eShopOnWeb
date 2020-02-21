@@ -16,15 +16,17 @@ namespace Microsoft.eShopWeb.Web.Services
         private readonly IAsyncRepository<Basket> _basketRepository;
         private readonly IUriComposer _uriComposer;
         private readonly IAsyncRepository<CatalogItem> _itemRepository;
+        private readonly ILogger<BasketViewModelService> _logger;
        
         public BasketViewModelService(IAsyncRepository<Basket> basketRepository,
             IAsyncRepository<CatalogItem> itemRepository,
-            IUriComposer uriComposer,
+            IUriComposer uriComposer, ILoggerFactory logger)
            
         {
             _basketRepository = basketRepository;
             _uriComposer = uriComposer;
             _itemRepository = itemRepository;
+            _logger = logger.CreateLogger<BasketViewModelService>();
             
 
         }

@@ -7,5 +7,4 @@ namespace Microsoft.eShopWeb.Infrastructure.Identity
         public string Name { get; set; }
         public string ProviderName { get; set; }
     }
-    }
 }
