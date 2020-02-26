@@ -47,6 +47,7 @@ namespace Microsoft.eShopWeb.Web.Controllers
         public string StatusMessage { get; set; }
 
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> LinkLoginCallback()
         {
