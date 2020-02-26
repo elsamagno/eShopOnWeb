@@ -11,7 +11,7 @@ using Microsoft.eShopWeb.ApplicationCore.Constants;
 using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Web.Extensions;
-using Microsoft.eShopWeb.Web.Features.AllOrders;
+using Microsoft.eShopWeb.Web.Features.AdminOrders;
 using Microsoft.eShopWeb.Web.ViewModels;
 using Microsoft.Extensions.Logging;
 
@@ -58,6 +58,8 @@ namespace Microsoft.eShopWeb.Web.Pages.Admin.Orders
             // updatedCatalogItem.CatalogBrandId = viewModel.CatalogBrandId;
             // updatedCatalogItem.CatalogTypeId = viewModel.CatalogTypeId;
              var updatedOrder = existingOrder;
+             // OrderStatus updatedStatus;
+            // Enum.TryParse<OrderStatus>(viewModel.Status.ToString(), out updatedStatus);
             updatedOrder.Status = viewModel.Status;
             updatedOrder.Notes = viewModel.Notes;
 
